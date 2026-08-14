@@ -1,0 +1,44 @@
+services:
+  - type: web
+    name: lastore-api
+    runtime: node
+    region: ohio
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3001
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      - key: MP_ACCESS_TOKEN
+        sync: false
+      - key: MP_WEBHOOK_SECRET
+        sync: false
+      - key: MAIL_HOST
+        sync: false
+      - key: MAIL_PORT
+        value: 465
+      - key: MAIL_USER
+        sync: false
+      - key: MAIL_PASS
+        sync: false
+      - key: MAIL_FROM
+        sync: false
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: FRONTEND_URL
+        sync: false

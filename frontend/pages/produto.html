@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="index,follow">
+<meta name="theme-color" content="#FAFAF8">
+<meta property="og:title" content="Produto L.A. STORE">
+<meta property="og:description" content="Peças selecionadas das nossas marcas — BIAMAR, ANSELMI e outras.">
+<meta property="og:type" content="product">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="description" content="Produto L.A. STORE — moda feminina, masculina e infantil.">
+<title>Produto — L.A. STORE</title>
+<link rel="icon" type="image/svg+xml" href="../assets/svg/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+<script>window.LASTORE_API_URL = 'https://lastore-api.onrender.com/api';</script>
+</head>
+<body>
+
+<header class="site-header" id="site-header">
+  <div class="header-inner">
+    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu"><span></span><span></span><span></span></button>
+    <a href="../index.html" class="logo"><img class="logo-symbol" src="../assets/svg/lastore-logo-mono.svg" alt="" aria-hidden="true" width="28" height="28"><span class="logo-wordmark"><span class="logo-deco">L.A.</span> <span class="logo-risa">STORE</span></span></a>
+    <nav class="main-nav" id="mainNav">
+      <ul>
+        <li><a href="loja.html">Loja</a></li><li><a href="lancamentos.html">Lançamentos</a></li>
+        <li><a href="sobre.html">Sobre</a></li>
+        <li><a href="contato.html">Contato</a></li>
+        <li id="adminLink" style="display:none"><a href="admin.html">Admin</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <a href="cliente.html" class="action-link" aria-label="Minha conta">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </a>
+      <button class="cart-toggle" id="cartToggle" aria-label="Carrinho">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        <span class="cart-count" id="cartCount">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- CART DRAWER -->
+<aside class="cart-drawer" id="cartDrawer" aria-hidden="true">
+  <div class="cart-overlay" id="cartOverlay"></div>
+  <div class="cart-panel">
+    <div class="cart-header">
+      <h2>Seu Carrinho</h2>
+      <button class="cart-close" id="cartClose" aria-label="Fechar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="cart-body" id="cartBody">
+      <div class="cart-empty" id="cartEmpty">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        <p>Carrinho vazio.</p>
+        <a href="loja.html" class="btn-primary">Explorar loja</a>
+      </div>
+      <ul class="cart-items" id="cartItems"></ul>
+    </div>
+    <div class="cart-footer" id="cartFooter" style="display:none">
+      <div class="cart-shipping">
+        <label>Calcular frete</label>
+        <div class="shipping-row">
+          <input type="text" id="cepInput" placeholder="00000-000" maxlength="9" oninput="maskCEP(this)">
+          <button onclick="Cart.calcularFrete()" class="btn-calcfrete">Calcular</button>
+        </div>
+        <p class="shipping-result" id="shippingResult"></p>
+      </div>
+      <div class="cart-coupon">
+        <label>Cupom</label>
+        <div class="coupon-row">
+          <input type="text" id="couponInput" placeholder="LASTORE10">
+          <button onclick="Cart.aplicarCupom()" class="btn-coupon">Aplicar</button>
+        </div>
+        <p class="coupon-result" id="couponResult"></p>
+      </div>
+      <div class="cart-totals">
+        <div class="total-row"><span>Subtotal</span><span id="cartSubtotal">R$ 0,00</span></div>
+        <div class="total-row" id="discountRow" style="display:none;color:#5A8A5A"><span>Desconto</span><span id="cartDiscount"></span></div>
+        <div class="total-row" id="freteRow" style="display:none"><span>Frete</span><span id="cartFrete"></span></div>
+        <div class="total-row total-final"><span>Total</span><span id="cartTotal">R$ 0,00</span></div>
+      </div>
+      <a href="checkout.html" class="btn-primary btn-block">Finalizar pedido</a>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN PRODUTO -->
+<main id="produtoMain">
+  <!-- Skeleton de loading -->
+  <div id="produtoSkeleton" class="produto-wrap" style="align-items:start">
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="aspect-ratio:1;background:var(--color-bg-alt);animation:pulse 1.5s infinite"></div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+        <div style="aspect-ratio:1;background:var(--color-bg-alt);animation:pulse 1.5s infinite"></div>
+        <div style="aspect-ratio:1;background:var(--color-bg-alt);animation:pulse 1.5s infinite"></div>
+        <div style="aspect-ratio:1;background:var(--color-bg-alt);animation:pulse 1.5s infinite"></div>
+        <div style="aspect-ratio:1;background:var(--color-bg-alt);animation:pulse 1.5s infinite"></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px;padding-top:8px">
+      <div style="height:12px;width:40%;background:var(--color-bg-alt);animation:pulse 1.5s infinite"></div>
+      <div style="height:44px;width:70%;background:var(--color-bg-alt);animation:pulse 1.5s infinite"></div>
+      <div style="height:32px;width:30%;background:var(--color-bg-alt);animation:pulse 1.5s infinite"></div>
+      <div style="height:80px;background:var(--color-bg-alt);animation:pulse 1.5s infinite"></div>
+      <div style="height:48px;background:var(--color-bg-alt);animation:pulse 1.5s infinite"></div>
+    </div>
+  </div>
+
+  <!-- Conteúdo real -->
+  <div id="produtoContent" style="display:none"></div>
+
+  <!-- AVALIAÇÕES -->
+  <section id="reviewsSection" style="display:none;max-width:var(--max-w);margin:0 auto;padding:56px 48px;border-top:0.5px solid var(--color-border)">
+    <div class="section-header">
+      <div class="eyebrow"><span class="eyebrow-line"></span>Avaliações</div>
+      <h2 class="section-title" style="font-size:32px">O que dizem sobre esta <em>peça</em></h2>
+    </div>
+    <div id="reviewsGrid" class="dep-grid"></div>
+    <div id="noReviews" style="display:none;font-size:14px;color:var(--color-text-light);text-align:center;padding:32px 0">
+      Seja o primeiro a avaliar esta peça.
+    </div>
+  </section>
+
+  <!-- RELACIONADOS -->
+  <section id="relacionadosSection" style="display:none;max-width:var(--max-w);margin:0 auto;padding:0 48px 80px;border-top:0.5px solid var(--color-border)">
+    <div class="section-header" style="margin-top:56px">
+      <div class="eyebrow"><span class="eyebrow-line"></span>Você também pode gostar</div>
+      <h2 class="section-title" style="font-size:32px">Outras <em>peças</em></h2>
+    </div>
+    <div class="products-grid" id="relacionadosGrid"></div>
+  </section>
+</main>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-top">
+    <div class="footer-col footer-brand">
+      <a href="../index.html" class="footer-brand-name">L.A. STORE</a>
+      <p class="footer-desc">BIAMAR · ANSELMI · MULTIMARCAS. Moda feminina, masculina e infantil.</p>
+      <a href="https://wa.me/5500000000000" class="footer-whatsapp" target="_blank" rel="noopener">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
+        Fale conosco
+      </a>
+    </div>
+    <div class="footer-col">
+      <h3 class="footer-col-title">Loja</h3>
+      <ul class="footer-links">
+        <li><a href="loja.html">Todos os produtos</a></li>
+        <li><a href="loja.html?cat=feminino">Feminino</a></li>
+        <li><a href="loja.html?cat=masculino">Masculino</a></li>
+        <li><a href="loja.html?cat=infantil">Infantil</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h3 class="footer-col-title">Informações</h3>
+      <ul class="footer-links">
+        <li><a href="sobre.html">Sobre</a></li>
+        <li><a href="contato.html">Contato</a></li>
+        <li><a href="contato.html#faq">FAQ</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h3 class="footer-col-title">Newsletter</h3>
+      <form class="newsletter-form">
+        <div class="newsletter-row">
+          <input type="email" placeholder="seu@email.com" required>
+          <button type="submit">→</button>
+        </div>
+        <p class="newsletter-msg"></p>
+      </form>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-copy">© 2026 L.A. STORE. Todos os direitos reservados.</p>
+    <div class="footer-payment"><span>Pix</span><span>Cartão</span><span>Boleto</span></div>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="alert" aria-live="polite"></div>
+
+<!-- MODAL: Avise-me quando voltar (visitante não logado) -->
+<div id="stockNotifyModal" style="display:none;position:fixed;inset:0;z-index:9999;align-items:center;justify-content:center;padding:20px">
+  <div id="stockNotifyModalOverlay" style="position:absolute;inset:0;background:rgba(44,42,38,0.45);backdrop-filter:blur(2px)" onclick="closeStockNotifyModal()"></div>
+  <div style="position:relative;background:var(--color-bg,#FAFAF8);max-width:420px;width:100%;border-radius:12px;padding:32px 28px;box-shadow:0 20px 60px rgba(0,0,0,0.25)">
+    <button onclick="closeStockNotifyModal()" aria-label="Fechar" style="position:absolute;top:16px;right:16px;background:none;border:none;cursor:pointer;padding:6px;color:var(--color-text-light)">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+      <strong style="font-size:15px;font-weight:500;letter-spacing:0.02em">Avise-me quando voltar</strong>
+    </div>
+    <p style="font-size:12.5px;color:var(--color-text-muted);line-height:1.6;margin:0 0 22px" id="stockNotifyModalProductLine"></p>
+
+    <form id="stockNotifyForm" onsubmit="submitStockNotifyForm(event)">
+      <div class="form-group" style="margin-bottom:14px">
+        <label style="display:block;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--color-text-muted);margin-bottom:6px">Nome (opcional)</label>
+        <input type="text" id="stockNotifyName" placeholder="Seu nome" style="width:100%;padding:11px 14px;border:0.5px solid var(--color-border);border-radius:6px;font-family:var(--font-body);font-size:13px;background:#fff">
+      </div>
+      <div class="form-group" style="margin-bottom:18px">
+        <label style="display:block;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--color-text-muted);margin-bottom:6px">E-mail *</label>
+        <input type="email" id="stockNotifyEmail" placeholder="seu@email.com" required style="width:100%;padding:11px 14px;border:0.5px solid var(--color-border);border-radius:6px;font-family:var(--font-body);font-size:13px;background:#fff">
+      </div>
+      <p id="stockNotifyModalFeedback" style="font-size:12px;margin:0 0 14px;min-height:16px;line-height:1.5"></p>
+      <button type="submit" id="stockNotifyModalBtn" class="btn-primary" style="width:100%">Cadastrar Notificação</button>
+    </form>
+  </div>
+</div>
+
+<!-- GUIA DE MEDIDAS -->
+<div id="sizeGuideModal" style="display:none;position:fixed;inset:0;z-index:9999;align-items:center;justify-content:center;padding:20px">
+  <div style="position:absolute;inset:0;background:rgba(20,20,20,0.45);backdrop-filter:blur(2px)" onclick="closeSizeGuide()"></div>
+  <div style="position:relative;background:var(--color-bg);max-width:420px;width:100%;padding:28px 26px;border-radius:10px">
+    <button onclick="closeSizeGuide()" aria-label="Fechar" style="position:absolute;top:14px;right:14px;background:none;border:none;cursor:pointer;padding:6px">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <h3 style="font-family:var(--font-display);font-size:22px;font-weight:400;margin-bottom:16px">Guia de medidas</h3>
+    <div id="sizeGuideBody"></div>
+  </div>
+</div>
+
+<a href="https://wa.me/5500000000000" class="whatsapp-float" target="_blank" rel="noopener" aria-label="WhatsApp">
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<style>
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.size-opt.sold-out { opacity: 0.35; position: relative; text-decoration: line-through; cursor: not-allowed; }
+#btnAddCart:disabled { opacity: 0.5; cursor: not-allowed; }
+</style>
+
+<script src="../js/api.js"></script>
+<script src="../js/cart.js"></script>
+<script src="../js/main.js"></script>
+<script>
+(async () => {
+  const params = new URLSearchParams(location.search);
+  const slug   = params.get('slug');
+  if (!slug) { window.location.href = 'loja.html'; return; }
+
+  let product       = null;
+  let selectedColor  = null;   // nome da cor selecionada
+  let selectedSize   = null;   // tamanho selecionado
+  let localQty       = 1;
+  let colorHexMap    = {};     // nome da cor -> hex (para swatches)
+
+  const SIZE_ORDER = ['PP','P','M','G','GG','XG','36','38','40','42','44','46','Único'];
+  function sortSizes(sizes) {
+    return [...sizes].sort((a, b) => {
+      const ia = SIZE_ORDER.indexOf(a), ib = SIZE_ORDER.indexOf(b);
+      if (ia === -1 && ib === -1) return a.localeCompare(b);
+      if (ia === -1) return 1;
+      if (ib === -1) return -1;
+      return ia - ib;
+    });
+  }
+
+  /** Retorna a quantidade em estoque para uma combinação tamanho+cor. */
+  function stockFor(size, color) {
+    const row = (product.variant_stock || []).find(v => v.size === size && v.color_name === color);
+    return row ? row.quantity : 0;
+  }
+
+  try {
+    const data = await api.products.get(slug);
+    product = data.product;
+  } catch {
+    document.getElementById('produtoSkeleton').innerHTML =
+      '<div style="grid-column:1/-1;text-align:center;padding:80px 48px"><p style="font-size:14px;color:var(--color-text-light)">Produto não encontrado. <a href="loja.html" style="color:var(--color-text)">Voltar para a loja</a></p></div>';
+    return;
+  }
+
+  /* Atualiza meta tags dinamicamente */
+  document.title = `${product.name} — L.A. STORE`;
+  document.querySelector('meta[name=description]').content = product.description?.slice(0,160) || '';
+  document.querySelector('meta[property="og:title"]')?.setAttribute('content', `${product.name} — L.A. STORE`);
+  document.querySelector('meta[property="og:description"]')?.setAttribute('content', product.description?.slice(0,160) || '');
+  document.querySelector('meta[name="twitter:title"]')?.setAttribute('content', `${product.name} — L.A. STORE`);
+  document.querySelector('meta[name="twitter:description"]')?.setAttribute('content', product.description?.slice(0,160) || '');
+
+  /* Busca hex das cores globais (para os swatches) */
+  try {
+    const { colors: allColors } = await api.products.colors();
+    colorHexMap = Object.fromEntries((allColors || []).map(c => [c.name, c.hex]));
+  } catch {}
+
+  /* Tamanhos e cores disponíveis (a partir do estoque por variação) */
+  const sizesAvailable  = sortSizes(product.sizes || []);
+  const colorsAvailable = (product.colors || []).map(c => c.name);
+  const hasVariants = sizesAvailable.length > 0 && colorsAvailable.length > 0;
+
+  if (hasVariants) {
+    // Seleciona por padrão a primeira combinação com estoque > 0
+    let picked = null;
+    for (const c of colorsAvailable) {
+      for (const s of sizesAvailable) {
+        if (stockFor(s, c) > 0) { picked = { s, c }; break; }
+      }
+      if (picked) break;
+    }
+    selectedColor = picked?.c || colorsAvailable[0];
+    selectedSize  = picked?.s || sizesAvailable[0];
+  }
+
+  /* Imagens */
+  const images = product.images?.length
+    ? product.images
+    : [{ url: null, alt: product.name }];
+
+  /* Build HTML */
+  const specsHTML = [
+    product.brand?.name && ['Marca', product.brand.name],
+    product.composition && ['Composição', product.composition],
+    product.care_instructions && ['Cuidados', product.care_instructions],
+    product.production_days && ['Prazo de entrega', `${product.production_days} a ${product.production_days + 3} dias úteis`],
+  ].filter(Boolean).map(([k,v]) =>
+    `<div class="spec-row"><dt>${k}</dt><dd>${v}</dd></div>`
+  ).join('');
+
+  const starsHtml = product.avg_rating
+    ? '★'.repeat(Math.round(product.avg_rating)) + '☆'.repeat(5 - Math.round(product.avg_rating))
+    : '★★★★★';
+
+  const totalStock = product.total_stock ?? (product.variant_stock || []).reduce((s,v) => s + v.quantity, 0);
+  const hasPromo = product.promo_price && Number(product.promo_price) > 0 && Number(product.promo_price) < Number(product.price);
+  const isOutOfStock = (product.variant_stock && product.variant_stock.length > 0)
+    ? totalStock <= 0
+    : (product.product_type === 'stock' && Number(product.stock) <= 0);
+  const displayPrice = hasPromo ? Number(product.promo_price) : Number(product.price);
+  const priceHTML = displayPrice === 0
+    ? `<span class="produto-price" style="font-size:22px;letter-spacing:0.06em">Sob consulta</span>`
+    : `${hasPromo ? `<span style="font-size:15px;color:var(--color-text-light);text-decoration:line-through;margin-right:8px">${fmtPrice(product.price)}</span>` : ''}
+       <span class="produto-price">${fmtPrice(displayPrice)}</span>
+       <span class="produto-price-pix">ou ${fmtPrice(product.price_pix || displayPrice * 0.95)} no Pix</span>`;
+
+  document.getElementById('produtoContent').innerHTML = `
+    <div class="produto-wrap" style="align-items:start">
+      <!-- GALERIA -->
+      <div class="produto-gallery">
+        <div class="gallery-main" id="galleryMain">
+          ${images[0]?.url
+            ? `<img id="galleryMainImg" src="${images[0].url}" alt="${images[0].alt || product.name}"
+                style="width:100%;height:100%;object-fit:cover;transition:opacity 0.2s">`
+            : `<div class="premium-placeholder">
+                <div class="premium-placeholder-mark" aria-hidden="true">
+                  <svg viewBox="0 0 160 200" width="92" height="116" fill="none" stroke="currentColor" stroke-width="1.25">
+                    <path d="M48 50Q40 100 44 155Q56 190 80 191Q104 190 116 155Q120 100 112 50Z"></path>
+                    <ellipse cx="80" cy="50" rx="32" ry="8"></ellipse>
+                  </svg>
+                </div>
+                <span>Imagem do produto em breve</span>
+               </div>`}
+        </div>
+        <div class="gallery-thumbs" id="galleryThumbs">
+          ${images.map((img, i) => `
+            <div class="gallery-thumb ${i===0?'active':''}" onclick="selectThumb(${i})" data-idx="${i}">
+              ${img.url
+                ? `<img src="${img.url}" alt="${img.alt || ''}" style="width:100%;height:100%;object-fit:cover">`
+                : `<div style="width:100%;height:100%;background:var(--color-bg-alt)"></div>`}
+            </div>
+          `).join('')}
+        </div>
+      </div>
+
+      <!-- INFO -->
+      <div class="produto-info">
+        <nav class="produto-breadcrumb" aria-label="Breadcrumb">
+          <a href="../index.html">Home</a> ·
+          <a href="loja.html">Loja</a> ·
+          <a href="loja.html?cat=${product.category?.slug || ''}">${product.category?.name || ''}</a> ·
+          ${product.name}
+        </nav>
+
+        <h1 class="produto-name">${product.name}</h1>
+        <p class="produto-sku">SKU: ${product.sku}</p>
+
+        <div class="produto-stars">
+          <span class="stars" aria-label="${product.avg_rating || 5} de 5 estrelas">${starsHtml}</span>
+          <span class="reviews-count">${product.reviews?.length || 0} avaliações</span>
+        </div>
+
+        <div class="produto-price-wrap">${priceHTML}</div>
+
+        ${Number(product.price) > 0 ? `
+          <div style="font-size:12px;color:#4A7A4A;margin-bottom:20px;display:flex;align-items:center;gap:6px">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M8 12l2.5 2.5L16 9"/></svg>
+            Pague com Pix e economize ${fmtPrice(product.price - (product.price_pix || product.price * 0.95))}
+          </div>
+        ` : ''}
+
+        <div class="produto-divider"></div>
+        <p class="produto-desc">${product.description || ''}</p>
+        <div class="produto-artesanal">"Peça selecionada com cuidado pela curadoria L.A. STORE."</div>
+
+        ${hasVariants ? `
+        <div class="option-group">
+          <div class="option-label">
+            <span>Cor</span>
+            <span id="colorLabel">${selectedColor || ''}</span>
+          </div>
+          <div class="color-options" id="colorOptions">
+            ${colorsAvailable.map((c) => `
+              <div class="color-opt ${c===selectedColor?'selected':''}"
+                   data-value="${c}"
+                   style="background:${colorHexMap[c] || '#CCC'}"
+                   title="${c}"
+                   onclick="selectColor(this)"
+                   role="radio" aria-label="${c}" aria-checked="${c===selectedColor}">
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <div class="option-group">
+          <div class="option-label">
+            <span>Tamanho</span>
+            <span style="display:flex;align-items:center;gap:10px">
+              <span id="sizeLabel">${selectedSize || ''}</span>
+              ${product.size_guide?.length ? `<button type="button" onclick="openSizeGuide()" style="font-size:11px;text-decoration:underline;color:var(--color-text-muted);background:none;border:none;cursor:pointer;letter-spacing:0.02em">Guia de tamanhos</button>` : ''}
+            </span>
+          </div>
+          <div class="size-options" id="sizeOptions">
+            ${sizesAvailable.map((s) => {
+              const qty = stockFor(s, selectedColor);
+              const soldOut = qty <= 0;
+              return `<button class="size-opt ${s===selectedSize?'selected':''} ${soldOut?'sold-out':''}"
+                      data-value="${s}"
+                      onclick="selectSize(this)"
+                      ${soldOut ? 'title="Esgotado"' : ''}
+                      aria-pressed="${s===selectedSize}">${s}</button>`;
+            }).join('')}
+          </div>
+          <p id="sizeStockMsg" style="font-size:11.5px;margin-top:8px;color:${stockFor(selectedSize, selectedColor) > 0 ? (stockFor(selectedSize, selectedColor) < 4 ? '#8A5A18' : '#4A7A4A') : '#A33'}">
+            ${stockFor(selectedSize, selectedColor) > 0
+              ? (stockFor(selectedSize, selectedColor) < 4 ? `Restam apenas ${stockFor(selectedSize, selectedColor)} unidades` : 'Em estoque')
+              : 'ESGOTADO nesta combinação'}
+          </p>
+        </div>
+        ` : ''}
+
+        <div style="margin-bottom:20px">
+          ${!isOutOfStock ? `
+          <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-text-light);display:block;margin-bottom:8px">Quantidade</label>
+          <div class="qty-row">
+            <button class="qty-btn" onclick="changeLocalQty(-1)" aria-label="Diminuir">−</button>
+            <span class="qty-val" id="qtyDisplay">1</span>
+            <button class="qty-btn" onclick="changeLocalQty(1)"  aria-label="Aumentar">+</button>
+          </div>
+          ` : ''}
+
+          ${isOutOfStock
+            ? `<div style="margin-top:0;padding:14px 16px;background:rgba(163,51,51,0.05);border:0.5px solid rgba(163,51,51,0.18);border-radius:6px;display:flex;align-items:center;gap:10px">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A33" stroke-width="1.8" style="flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="8" y1="8" x2="16" y2="16"/><line x1="16" y1="8" x2="8" y2="16"/></svg>
+                <span style="font-size:12.5px;color:#A33;letter-spacing:0.01em">ESGOTADO — Temporariamente fora de estoque</span>
+              </div>`
+            : ''}
+        </div>
+
+        ${isOutOfStock ? `
+        <!-- AVISE-ME QUANDO VOLTAR -->
+        <div id="stockNotifyBlock" style="margin-bottom:20px;padding:20px;background:linear-gradient(135deg, rgba(0,0,0,0.025), rgba(0,0,0,0.045));border:0.5px solid var(--color-border);border-radius:10px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+            <strong style="font-size:13px;font-weight:500;letter-spacing:0.02em">Avise-me quando voltar</strong>
+          </div>
+          <p style="font-size:12px;color:var(--color-text-muted);line-height:1.6;margin:0 0 16px">
+            Cadastre-se e enviaremos um e-mail assim que esta peça voltar ao estoque.
+          </p>
+          <button class="btn-primary" id="stockNotifyBtn" style="width:100%" onclick="requestStockNotify()">
+            Quero ser avisado
+          </button>
+          <p id="stockNotifyFeedback" style="font-size:12px;margin:12px 0 0;min-height:16px;line-height:1.6"></p>
+        </div>
+        ` : ''}
+
+        <div class="produto-actions">
+          ${isOutOfStock
+            ? '' // Botão de comprar/adicionar oculto — substituído pelo bloco de notificação acima
+            : `<button class="btn-primary btn-comprar" onclick="addToCartNow()" id="btnAddCart">
+                 Adicionar à sacola
+               </button>
+               <button class="btn-outline btn-comprar" onclick="buyNow()" style="margin-top:8px">
+                 Comprar agora
+               </button>`}
+        </div>
+
+        <!-- DÚVIDAS SOBRE O PRODUTO — WHATSAPP -->
+        <a id="btnWhatsappDoubt" href="#" target="_blank" rel="noopener" class="btn-wpp" style="width:100%;margin-top:10px;justify-content:center">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Dúvidas sobre este produto?
+        </a>
+
+        <!-- FRETE -->
+        <div class="frete-calc">
+          <div class="frete-calc-title">Calcular frete</div>
+          <div class="frete-row">
+            <input type="text" id="prodCepInput" placeholder="00000-000" maxlength="9" oninput="maskCEP(this)">
+            <button class="btn-calcfrete" onclick="calcFreteProduct()">Calcular</button>
+          </div>
+          <p id="prodFreteResult" style="font-size:12px;color:var(--color-text-light);margin-top:6px;min-height:16px"></p>
+        </div>
+
+        <div class="produto-divider"></div>
+
+        <!-- SPECS -->
+        <dl class="produto-specs">${specsHTML}</dl>
+      </div>
+    </div>
+  `;
+
+  /* Mostra conteúdo, esconde skeleton */
+  document.getElementById('produtoSkeleton').style.display = 'none';
+  document.getElementById('produtoContent').style.display  = 'block';
+
+  /* Atualiza o link do WhatsApp de "Dúvidas sobre este produto?" */
+  updateWhatsappDoubtLink();
+
+  /* Avaliações */
+  const reviewsSec = document.getElementById('reviewsSection');
+  const reviewsGrid = document.getElementById('reviewsGrid');
+  const noReviews   = document.getElementById('noReviews');
+  reviewsSec.style.display = 'block';
+  if (product.reviews?.length) {
+    reviewsGrid.innerHTML = product.reviews.map(r => `
+      <article class="dep-card">
+        <div class="dep-stars" aria-label="${r.rating} estrelas">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</div>
+        ${r.title ? `<strong style="display:block;font-size:14px;margin-bottom:8px">${r.title}</strong>` : ''}
+        <blockquote class="dep-text">"${r.body}"</blockquote>
+        <footer class="dep-author">
+          <strong>${r.user?.name || 'Cliente'}</strong>
+          <span>${fmtDate(r.created_at)}</span>
+        </footer>
+      </article>
+    `).join('');
+  } else {
+    noReviews.style.display = 'block';
+  }
+
+  /* Relacionados */
+  try {
+    const { products: related } = await api.products.list({ category: product.category?.slug, limit: 4 });
+    const filtered = related.filter(p => p.id !== product.id).slice(0, 4);
+    if (filtered.length) {
+      document.getElementById('relacionadosSection').style.display = 'block';
+      document.getElementById('relacionadosGrid').innerHTML = filtered.map(renderProductCard).join('');
+      initReveal();
+    }
+  } catch {}
+
+  /* === FUNÇÕES DA PÁGINA === */
+  window.selectThumb = (idx) => {
+    document.querySelectorAll('.gallery-thumb').forEach((t,i) => t.classList.toggle('active', i===idx));
+    const img = images[idx];
+    const main = document.getElementById('galleryMainImg');
+    if (main && img?.url) {
+      main.style.opacity = '0';
+      setTimeout(() => { main.src = img.url; main.style.opacity = '1'; }, 150);
+    }
+  };
+
+  /** Re-renderiza os botões de tamanho considerando a cor selecionada
+   *  (cada combinação tem seu próprio estoque). */
+  function refreshSizeButtons() {
+    const wrap = document.getElementById('sizeOptions');
+    if (!wrap) return;
+    wrap.querySelectorAll('.size-opt').forEach(btn => {
+      const size = btn.dataset.value;
+      const qty = stockFor(size, selectedColor);
+      const soldOut = qty <= 0;
+      btn.classList.toggle('sold-out', soldOut);
+      btn.title = soldOut ? 'Esgotado' : '';
+    });
+    const msg = document.getElementById('sizeStockMsg');
+    const qty = stockFor(selectedSize, selectedColor);
+    if (msg) {
+      if (qty > 0) {
+        msg.style.color = qty < 4 ? '#8A5A18' : '#4A7A4A';
+        msg.textContent = qty < 4 ? `Restam apenas ${qty} unidades` : 'Em estoque';
+      } else {
+        msg.style.color = '#A33';
+        msg.textContent = 'ESGOTADO nesta combinação';
+      }
+    }
+    const addBtn = document.getElementById('btnAddCart');
+    if (addBtn) addBtn.disabled = hasVariants && qty <= 0;
+  }
+
+  window.selectColor = (el) => {
+    document.querySelectorAll('.color-opt').forEach(c => { c.classList.remove('selected'); c.setAttribute('aria-checked','false'); });
+    el.classList.add('selected');
+    el.setAttribute('aria-checked','true');
+    selectedColor = el.dataset.value;
+    const lbl = document.getElementById('colorLabel');
+    if (lbl) lbl.textContent = selectedColor;
+
+    // Se o tamanho atual não tem estoque nesta cor, tenta escolher outro com estoque
+    if (stockFor(selectedSize, selectedColor) <= 0) {
+      const alt = sizesAvailable.find(s => stockFor(s, selectedColor) > 0);
+      if (alt) {
+        selectedSize = alt;
+        document.querySelectorAll('.size-opt').forEach(s => {
+          const match = s.dataset.value === selectedSize;
+          s.classList.toggle('selected', match);
+          s.setAttribute('aria-pressed', match ? 'true' : 'false');
+        });
+        const sLbl = document.getElementById('sizeLabel');
+        if (sLbl) sLbl.textContent = selectedSize;
+      }
+    }
+    refreshSizeButtons();
+    updateWhatsappDoubtLink();
+  };
+
+  window.selectSize = (el) => {
+    document.querySelectorAll('.size-opt').forEach(s => { s.classList.remove('selected'); s.setAttribute('aria-pressed','false'); });
+    el.classList.add('selected');
+    el.setAttribute('aria-pressed','true');
+    selectedSize = el.dataset.value;
+    const lbl = document.getElementById('sizeLabel');
+    if (lbl) lbl.textContent = selectedSize;
+    refreshSizeButtons();
+    updateWhatsappDoubtLink();
+  };
+
+  window.changeLocalQty = (delta) => {
+    const maxQty = hasVariants ? (stockFor(selectedSize, selectedColor) || 1) : 99;
+    localQty = Math.max(1, Math.min(localQty + delta, maxQty || 99));
+    const el = document.getElementById('qtyDisplay');
+    if (el) el.textContent = localQty;
+  };
+
+  function addToCartInternal() {
+    if (hasVariants && stockFor(selectedSize, selectedColor) <= 0) {
+      alert('Esta combinação de tamanho e cor está esgotada.');
+      return false;
+    }
+    Cart.add(product, localQty, selectedColor, selectedSize, null);
+    return true;
+  }
+
+  window.addToCartNow = () => { addToCartInternal(); };
+
+  window.buyNow = () => {
+    if (addToCartInternal()) window.location.href = 'checkout.html';
+  };
+
+  /** Monta o link de WhatsApp com mensagem automática incluindo tamanho e cor. */
+  function updateWhatsappDoubtLink() {
+    const el = document.getElementById('btnWhatsappDoubt');
+    if (!el) return;
+    let msg = `Olá! Gostaria de saber mais sobre o produto ${product.name}.`;
+    if (hasVariants) msg += ` (Tamanho: ${selectedSize} / Cor: ${selectedColor})`;
+    el.href = `https://wa.me/5500000000000?text=${encodeURIComponent(msg)}`;
+  }
+
+  /* === GUIA DE MEDIDAS === */
+  window.openSizeGuide = () => {
+    const modal = document.getElementById('sizeGuideModal');
+    const body  = document.getElementById('sizeGuideBody');
+    if (!modal || !body) return;
+    const rows = product.size_guide || [];
+    body.innerHTML = `
+      <table style="width:100%;border-collapse:collapse;font-size:13px">
+        <thead>
+          <tr style="border-bottom:1px solid var(--color-border-mid)">
+            <th style="text-align:left;padding:8px 6px">Tamanho</th>
+            <th style="text-align:left;padding:8px 6px">Busto</th>
+            <th style="text-align:left;padding:8px 6px">Cintura</th>
+            <th style="text-align:left;padding:8px 6px">Quadril</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows.map(r => `
+            <tr style="border-bottom:1px solid var(--color-border)">
+              <td style="padding:8px 6px;font-weight:500">${r.size}</td>
+              <td style="padding:8px 6px">${r.bust_cm ? r.bust_cm + ' cm' : '—'}</td>
+              <td style="padding:8px 6px">${r.waist_cm ? r.waist_cm + ' cm' : '—'}</td>
+              <td style="padding:8px 6px">${r.hip_cm ? r.hip_cm + ' cm' : '—'}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+      <p style="font-size:11px;color:var(--color-text-light);margin-top:14px">Medidas em centímetros. Pequenas variações podem ocorrer.</p>
+    `;
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  };
+  window.closeSizeGuide = () => {
+    const modal = document.getElementById('sizeGuideModal');
+    if (modal) modal.style.display = 'none';
+    document.body.style.overflow = '';
+  };
+
+  window.calcFreteProduct = async () => {
+    const cep = (document.getElementById('prodCepInput')?.value || '').replace(/\D/g,'');
+    const res = document.getElementById('prodFreteResult');
+    if (!res) return;
+    if (cep.length !== 8) { res.textContent = 'CEP inválido.'; return; }
+    res.textContent = 'Calculando...';
+    try {
+      const data = await api.payment.getShipping(cep);
+      const cost = Number(product.price) >= data.shipping.free_from ? 0 : data.shipping.standard;
+      res.textContent = cost === 0
+        ? '✓ Frete grátis para este CEP!'
+        : `Frete: ${fmtPrice(cost)} — Prazo: 5 a 8 dias úteis`;
+    } catch { res.textContent = 'Erro ao calcular frete.'; }
+  };
+
+  /* === AVISE-ME QUANDO VOLTAR === */
+  window.requestStockNotify = async () => {
+    const feedback = document.getElementById('stockNotifyFeedback');
+    const btn = document.getElementById('stockNotifyBtn');
+
+    if (Auth.isLoggedIn()) {
+      // Cliente logado: cadastro em um único clique, sem pedir nome/e-mail
+      if (btn) { btn.disabled = true; btn.textContent = 'Enviando...'; }
+      try {
+        await api.stockNotifications.subscribe({ product_id: product.id });
+        if (feedback) {
+          feedback.style.color = '#4A7A4A';
+          feedback.innerHTML = '<strong>Perfeito!</strong><br>Avisaremos você por e-mail assim que este produto voltar ao estoque.';
+        }
+        if (btn) btn.style.display = 'none';
+      } catch (err) {
+        if (feedback) {
+          feedback.style.color = err.status === 409 ? '#8A5A18' : '#A33';
+          feedback.textContent = err.status === 409
+            ? 'Você já está acompanhando este produto.'
+            : (err.message || 'Erro ao cadastrar. Tente novamente.');
+        }
+        if (btn) { btn.disabled = false; btn.textContent = 'Quero ser avisado'; }
+      }
+    } else {
+      // Visitante: abre modal pedindo e-mail (nome opcional)
+      openStockNotifyModal();
+    }
+  };
+
+  window.openStockNotifyModal = () => {
+    const modal = document.getElementById('stockNotifyModal');
+    const line  = document.getElementById('stockNotifyModalProductLine');
+    if (line) line.textContent = `Assim que "${product.name}" voltar ao estoque, enviaremos um e-mail para você.`;
+    if (modal) { modal.style.display = 'flex'; }
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => document.getElementById('stockNotifyEmail')?.focus(), 50);
+  };
+
+  window.closeStockNotifyModal = () => {
+    const modal = document.getElementById('stockNotifyModal');
+    if (modal) modal.style.display = 'none';
+    document.body.style.overflow = '';
+  };
+
+  window.submitStockNotifyForm = async (e) => {
+    e.preventDefault();
+    const name  = document.getElementById('stockNotifyName')?.value?.trim() || null;
+    const email = document.getElementById('stockNotifyEmail')?.value?.trim();
+    const feedback = document.getElementById('stockNotifyModalFeedback');
+    const btn = document.getElementById('stockNotifyModalBtn');
+
+    if (!email) return;
+
+    if (btn) { btn.disabled = true; btn.textContent = 'Enviando...'; }
+    try {
+      await api.stockNotifications.subscribe({ product_id: product.id, name, email });
+      if (feedback) {
+        feedback.style.color = '#4A7A4A';
+        feedback.innerHTML = '<strong>Perfeito!</strong><br>Assim que este produto voltar ao estoque enviaremos um e-mail para você.';
+      }
+      document.getElementById('stockNotifyForm')?.querySelector('input[type=text], input[type=email]')?.blur();
+      if (btn) btn.style.display = 'none';
+      // Também atualiza o bloco principal da página
+      const mainFeedback = document.getElementById('stockNotifyFeedback');
+      const mainBtn = document.getElementById('stockNotifyBtn');
+      if (mainFeedback) {
+        mainFeedback.style.color = '#4A7A4A';
+        mainFeedback.innerHTML = '<strong>Perfeito!</strong><br>Avisaremos você por e-mail assim que este produto voltar ao estoque.';
+      }
+      if (mainBtn) mainBtn.style.display = 'none';
+      setTimeout(closeStockNotifyModal, 2200);
+    } catch (err) {
+      if (feedback) {
+        feedback.style.color = err.status === 409 ? '#8A5A18' : '#A33';
+        feedback.textContent = err.status === 409
+          ? 'Você já está acompanhando este produto.'
+          : (err.message || 'Erro ao cadastrar. Tente novamente.');
+      }
+      if (btn) { btn.disabled = false; btn.textContent = 'Cadastrar Notificação'; }
+    }
+  };
+
+})();
+</script>
+</body>
+</html>

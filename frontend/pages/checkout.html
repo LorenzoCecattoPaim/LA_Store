@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#FAFAF8">
+<title>Checkout — L.A. STORE</title>
+<link rel="icon" type="image/svg+xml" href="../assets/svg/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+<script>window.LASTORE_API_URL = 'https://lastore-api.onrender.com/api';</script>
+</head>
+<body>
+
+<header class="site-header" id="site-header" style="position:relative">
+  <div class="header-inner">
+    <a href="../index.html" class="logo"><img class="logo-symbol" src="../assets/svg/lastore-logo-mono.svg" alt="" aria-hidden="true" width="28" height="28"><span class="logo-wordmark"><span class="logo-deco">L.A.</span> <span class="logo-risa">STORE</span></span></a>
+    <div style="display:flex;align-items:center;gap:10px">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+      <span style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-text-light)">Checkout seguro</span>
+    </div>
+  </div>
+</header>
+
+<div id="checkoutContent">
+  <div class="checkout-wrap" id="checkoutWrap">
+    <!-- FORMULÁRIO -->
+    <div class="checkout-left">
+      <form id="checkoutForm" novalidate>
+
+        <!-- PROGRESSO -->
+        <div style="display:flex;align-items:center;gap:0;margin-bottom:40px">
+          <div class="checkout-step active" id="step1-indicator">
+            <span>1</span> Contato
+          </div>
+          <div class="checkout-step-line"></div>
+          <div class="checkout-step" id="step2-indicator">
+            <span>2</span> Entrega
+          </div>
+          <div class="checkout-step-line"></div>
+          <div class="checkout-step" id="step3-indicator">
+            <span>3</span> Pagamento
+          </div>
+        </div>
+
+        <!-- PASSO 1: CONTATO -->
+        <div class="checkout-section" id="step1">
+          <h2 class="checkout-section-title">Informações de contato</h2>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="cName">Nome completo *</label>
+              <input type="text" id="cName" placeholder="Seu nome completo" required>
+              <span class="field-error" id="cNameErr"></span>
+            </div>
+            <div class="form-group">
+              <label for="cEmail">E-mail *</label>
+              <input type="email" id="cEmail" placeholder="seu@email.com" required>
+              <span class="field-error" id="cEmailErr"></span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="cPhone">Telefone / WhatsApp</label>
+              <input type="tel" id="cPhone" placeholder="Fale conosco">
+          </div>
+          <div style="margin-top:8px">
+            <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--color-text-muted);cursor:pointer">
+              <input type="checkbox" id="saveAccount" style="accent-color:var(--color-text)">
+              Criar conta para acompanhar meu pedido
+            </label>
+          </div>
+          <div id="passwordGroup" style="display:none;margin-top:16px">
+            <div class="form-group">
+              <label for="cPassword">Senha (mínimo 8 caracteres)</label>
+              <input type="password" id="cPassword" placeholder="••••••••" minlength="8">
+            </div>
+          </div>
+          <button type="button" onclick="goToStep(2)" class="btn-primary" style="margin-top:24px">Continuar para entrega →</button>
+        </div>
+
+        <!-- PASSO 2: ENTREGA -->
+        <div class="checkout-section" id="step2" style="display:none">
+          <h2 class="checkout-section-title">Como deseja receber seu pedido?</h2>
+
+          <!-- Seletor de método de entrega -->
+          <div class="delivery-method-selector" id="deliveryMethodSelector">
+            <label class="delivery-method-option selected" id="dm-delivery" onclick="setDeliveryOption('delivery')">
+              <input type="radio" name="deliveryMethod" value="delivery" checked>
+              <div class="delivery-method-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v4h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+              </div>
+              <div>
+                <strong>Entrega</strong>
+                <span>Receba em casa pela transportadora</span>
+              </div>
+            </label>
+            <label class="delivery-method-option" id="dm-pickup" onclick="setDeliveryOption('pickup')">
+              <input type="radio" name="deliveryMethod" value="pickup">
+              <div class="delivery-method-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              </div>
+              <div>
+                <strong>Retirar na Loja</strong>
+                <span>Sem frete — retire no seu horário</span>
+              </div>
+            </label>
+          </div>
+
+          <!-- Painel: ENTREGA -->
+          <div id="panelDelivery">
+            <div id="savedAddresses" style="display:none;margin-bottom:20px"></div>
+            <div class="form-group">
+              <label for="shipZip">CEP *</label>
+              <div style="display:flex;gap:8px">
+                <input type="text" id="shipZip" placeholder="00000-000" maxlength="9"
+                  oninput="maskCEP(this)" style="flex:1">
+                <button type="button" onclick="doFetchCEP()" class="btn-calcfrete">Buscar</button>
+              </div>
+              <span class="field-error" id="shipZipErr"></span>
+              <a href="https://buscacepinter.correios.com.br" target="_blank" rel="noopener"
+                style="font-size:11px;color:var(--color-text-light);margin-top:4px;display:inline-block">
+                Não sei meu CEP →
+              </a>
+            </div>
+            <div class="form-group">
+              <label for="shipStreet">Rua / Avenida *</label>
+              <input type="text" id="shipStreet" placeholder="Rua, Avenida...">
+              <span class="field-error" id="shipStreetErr"></span>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="shipNumber">Número *</label>
+                <input type="text" id="shipNumber" placeholder="123">
+                <span class="field-error" id="shipNumberErr"></span>
+              </div>
+              <div class="form-group">
+                <label for="shipComplement">Complemento</label>
+                <input type="text" id="shipComplement" placeholder="Apto, bloco, sala...">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="shipNeighborhood">Bairro *</label>
+              <input type="text" id="shipNeighborhood" placeholder="Bairro">
+              <span class="field-error" id="shipNeighborhoodErr"></span>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="shipCity">Cidade *</label>
+                <input type="text" id="shipCity" placeholder="Cidade">
+                <span class="field-error" id="shipCityErr"></span>
+              </div>
+              <div class="form-group">
+                <label for="shipState">Estado *</label>
+                <input type="text" id="shipState" placeholder="SP" maxlength="2" style="text-transform:uppercase">
+                <span class="field-error" id="shipStateErr"></span>
+              </div>
+            </div>
+            <div id="shippingOptions" style="margin-top:20px;display:none">
+              <div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-text-light);margin-bottom:12px">Opção de frete</div>
+              <div id="shippingOptionsList"></div>
+            </div>
+          </div>
+
+          <!-- Painel: RETIRADA NA LOJA -->
+          <div id="panelPickup" style="display:none">
+            <div class="pickup-card">
+              <div class="pickup-card-header">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                <span>Retirada disponível em</span>
+              </div>
+              <div class="pickup-address">
+                <strong>Rua Emílio Costa, nº 30</strong>
+                <span>Campestre da Serra — RS</span>
+              </div>
+              <div class="pickup-note">
+                Assim que seu pedido estiver pronto entraremos em contato para agendar a retirada.
+              </div>
+              <a href="https://www.google.com/maps/search/?api=1&query=Rua+Em%C3%ADlio+Costa+30+Campestre+da+Serra+RS"
+                target="_blank" rel="noopener" class="pickup-map-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                Ver localização no Google Maps
+              </a>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:12px;margin-top:24px">
+            <button type="button" onclick="goToStep(1)" class="btn-ghost">← Voltar</button>
+            <button type="button" onclick="goToStep(3)" class="btn-primary">Continuar para pagamento →</button>
+          </div>
+        </div>
+                <!-- PASSO 3: PAGAMENTO -->
+        <div class="checkout-section" id="step3" style="display:none">
+          <h2 class="checkout-section-title">Forma de pagamento</h2>
+          <div class="payment-methods">
+            <label class="payment-method selected" id="pm-pix">
+              <input type="radio" name="payment" value="pix" checked onchange="selectPayment(this)">
+              <span>
+                <strong style="display:block;font-size:14px;margin-bottom:2px">Pix</strong>
+                <span style="font-size:12px;color:var(--color-text-light)">5% de desconto — instantâneo</span>
+              </span>
+              <span style="margin-left:auto;font-size:12px;color:#4A7A4A;font-weight:500" id="pixDiscount"></span>
+            </label>
+            <label class="payment-method" id="pm-credit_card">
+              <input type="radio" name="payment" value="credit_card" onchange="selectPayment(this)">
+              <span>
+                <strong style="display:block;font-size:14px;margin-bottom:2px">Cartão de crédito</strong>
+                <span style="font-size:12px;color:var(--color-text-light)">Em até 12× sem juros</span>
+              </span>
+            </label>
+            <label class="payment-method" id="pm-boleto">
+              <input type="radio" name="payment" value="boleto" onchange="selectPayment(this)">
+              <span>
+                <strong style="display:block;font-size:14px;margin-bottom:2px">Boleto bancário</strong>
+                <span style="font-size:12px;color:var(--color-text-light)">Vencimento em 3 dias úteis</span>
+              </span>
+            </label>
+            <label class="payment-method" id="pm-mercado_pago">
+              <input type="radio" name="payment" value="mercado_pago" onchange="selectPayment(this)">
+              <span>
+                <strong style="display:block;font-size:14px;margin-bottom:2px">Mercado Pago</strong>
+                <span style="font-size:12px;color:var(--color-text-light)">Cartão, Pix ou saldo MP</span>
+              </span>
+            </label>
+          </div>
+
+          <!-- Aviso segurança -->
+          <div style="display:flex;align-items:center;gap:10px;padding:14px 16px;background:var(--color-bg-alt);margin-top:20px;border:0.5px solid var(--color-border)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span style="font-size:12px;color:var(--color-text-muted)">Seus dados são protegidos com criptografia SSL. Não armazenamos dados de cartão.</span>
+          </div>
+
+          <div style="display:flex;gap:12px;margin-top:28px">
+            <button type="button" onclick="goToStep(2)" class="btn-ghost">← Voltar</button>
+            <button type="submit" id="submitBtn" class="btn-primary" style="flex:1;padding:16px;font-size:12px">
+              Confirmar pedido
+            </button>
+          </div>
+          <p style="font-size:11px;color:var(--color-text-light);text-align:center;margin-top:14px;line-height:1.6">
+            Ao confirmar, você concorda com nossos
+            <a href="#" style="color:var(--color-text)">Termos</a> e
+            <a href="#" style="color:var(--color-text)">Política de privacidade</a>.
+          </p>
+        </div>
+
+      </form>
+    </div>
+
+    <!-- RESUMO -->
+    <div class="checkout-right">
+      <div class="checkout-summary">
+        <h2 class="checkout-summary-title">Resumo do pedido</h2>
+        <div class="checkout-items" id="checkoutItems">
+          <p style="font-size:13px;color:var(--color-text-light)">Carregando...</p>
+        </div>
+        <div class="checkout-totals">
+          <div class="total-row"><span>Subtotal</span><span id="ckSubtotal">—</span></div>
+          <div class="total-row" id="ckDiscountRow" style="display:none;color:#5A8A5A">
+            <span>Desconto</span><span id="ckDiscount">—</span>
+          </div>
+          <div class="total-row" id="ckPixRow" style="display:none;color:#5A8A5A">
+            <span>Desconto Pix (5%)</span><span id="ckPixDiscount">—</span>
+          </div>
+          <div class="total-row" id="ckFreteRow">
+            <span>Frete</span><span id="ckFrete">A calcular</span>
+          </div>
+          <div class="total-row total-final">
+            <span>Total</span><span id="ckTotal">—</span>
+          </div>
+        </div>
+        <div id="mtoCheckoutNotice" style="display:none;margin-top:12px;padding:12px 14px;background:rgba(var(--color-text-rgb,30,27,24),0.03);border-left:2px solid var(--color-text);border-radius:0 4px 4px 0">
+          <p style="font-size:11px;font-weight:500;margin:0 0 4px;letter-spacing:0.03em;display:flex;align-items:center;gap:6px">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Produto sob encomenda
+          </p>
+          <p style="font-size:11px;color:var(--color-text-muted);margin:0;line-height:1.55">
+            Este produto é preparado especialmente para você após a confirmação do pedido.
+          </p>
+        </div>
+
+        <div style="margin-top:16px;padding-top:16px;border-top:0.5px solid var(--color-border)">
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--color-text-light);margin-bottom:8px">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            Pagamento 100% seguro
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--color-text-light)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 11 19.79 19.79 0 012 2.41 2 2 0 014 .21h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+            Suporte pelo WhatsApp
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.checkout-step {
+  display:flex;align-items:center;gap:8px;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;
+  color:var(--color-text-light);white-space:nowrap;
+}
+.checkout-step span {
+  width:24px;height:24px;border-radius:50%;background:var(--color-bg-alt);
+  display:flex;align-items:center;justify-content:center;font-size:11px;
+  border:0.5px solid var(--color-border-mid);flex-shrink:0;
+}
+.checkout-step.active { color:var(--color-text); }
+.checkout-step.active span { background:var(--color-text);color:var(--color-bg);border-color:var(--color-text); }
+.checkout-step.done span { background:#4A7A4A;color:#fff;border-color:#4A7A4A; }
+.checkout-step-line { flex:1;height:0.5px;background:var(--color-border);min-width:20px; }
+.field-error { display:block;font-size:11px;color:#A33;margin-top:4px;min-height:14px; }
+
+/* Delivery method selector */
+.delivery-method-selector { display:flex;flex-direction:column;gap:10px;margin-bottom:28px; }
+.delivery-method-option {
+  display:flex;align-items:center;gap:14px;padding:16px 18px;
+  border:0.5px solid var(--color-border);cursor:pointer;
+  transition:border-color 0.2s,background 0.2s;
+  background:var(--color-bg);
+}
+.delivery-method-option:hover { border-color:var(--color-border-mid); }
+.delivery-method-option.selected {
+  border-color:var(--color-text);background:var(--color-bg-alt);
+}
+.delivery-method-option input[type="radio"] { display:none; }
+.delivery-method-icon {
+  width:38px;height:38px;border-radius:50%;background:var(--color-bg-alt);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  border:0.5px solid var(--color-border);
+}
+.delivery-method-option.selected .delivery-method-icon {
+  background:var(--color-text);color:var(--color-bg);border-color:var(--color-text);
+}
+.delivery-method-option.selected .delivery-method-icon svg { stroke:var(--color-bg); }
+.delivery-method-option > div:last-child { display:flex;flex-direction:column;gap:3px; }
+.delivery-method-option strong { font-size:13px;font-weight:500;color:var(--color-text); }
+.delivery-method-option span { font-size:12px;color:var(--color-text-light); }
+
+/* Pickup card */
+.pickup-card {
+  border:0.5px solid var(--color-border);padding:28px 24px;
+  background:var(--color-bg-alt);margin-top:4px;
+}
+.pickup-card-header {
+  display:flex;align-items:center;gap:10px;
+  font-size:11px;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--color-text-light);margin-bottom:16px;
+}
+.pickup-address {
+  display:flex;flex-direction:column;gap:4px;margin-bottom:16px;
+}
+.pickup-address strong { font-size:16px;font-weight:400;font-family:var(--font-display);color:var(--color-text); }
+.pickup-address span { font-size:13px;color:var(--color-text-muted); }
+.pickup-note {
+  font-size:12px;color:var(--color-text-light);line-height:1.7;
+  padding:12px 14px;background:var(--color-bg);border:0.5px solid var(--color-border);
+  margin-bottom:20px;
+}
+.pickup-map-btn {
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:11px;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--color-text);border-bottom:0.5px solid var(--color-border-mid);
+  padding-bottom:2px;text-decoration:none;
+  transition:border-color 0.2s;
+}
+.pickup-map-btn:hover { border-color:var(--color-text); }
+</style>
+
+<div class="toast" id="toast" role="alert" aria-live="polite"></div>
+
+<script src="../js/api.js"></script>
+<script src="../js/cart.js"></script>
+<script src="../js/main.js"></script>
+<script>
+(async () => {
+  Cart.init();
+  /* Redireciona se carrinho vazio */
+  if (Cart.count() === 0) { window.location.href = 'loja.html'; return; }
+
+  let currentStep     = 1;
+  /* shippingCost é sempre lido do Cart para garantir consistência */
+  let selectedPayment = 'pix';
+
+  /* Helper: lê o frete sempre do Cart (fonte da verdade) */
+  function getShipping() { return Cart.shippingCost(); }
+
+  /* === RENDER RESUMO === */
+  function renderSummary() {
+    const items   = Cart.getItems();
+    const sub     = Cart.subtotal();
+    const disc    = Cart.discount();
+    const ship    = getShipping();  // sempre do Cart
+    const pixDisc = selectedPayment === 'pix' ? +(sub * 0.05).toFixed(2) : 0;
+    const total   = +(sub - disc - pixDisc + (ship !== null ? ship : 0)).toFixed(2);
+
+    function buildVariantTags(i) {
+      const tags = [];
+      if (i.color) tags.push(`<span class="checkout-custom-tag"><span style="width:8px;height:8px;border-radius:50%;background:${getColorHex(i.color)};display:inline-block;border:0.5px solid rgba(0,0,0,0.1)"></span>Cor: ${i.color}</span>`);
+      if (i.brand) tags.push(`<span class="checkout-custom-tag">${i.brand}</span>`);
+      return tags.length ? `<div class="checkout-item-custom">${tags.join('')}</div>` : '';
+    }
+
+    function getColorHex(name) {
+      const m = {
+        'Preto':'#141414','Branco':'#FFFFFF','Off-white':'#F4F1EA','Bege':'#D8C7AC',
+        'Azul':'#33445E','Verde':'#4A5C45','Marrom':'#5A4634','Grafite':'#3A3A38',
+      };
+      return m[name] || '#CCC';
+    }
+
+    document.getElementById('checkoutItems').innerHTML = items.map(i => {
+      const unitTotal = i.price * i.qty;
+      return `
+      <div class="checkout-item">
+        <div class="checkout-item-img">
+          ${i.image ? `<img src="${i.image}" alt="${i.name}" style="width:100%;height:100%;object-fit:cover">` : ''}
+        </div>
+        <div class="checkout-item-info">
+          <div class="checkout-item-name">${i.name}</div>
+          <div class="checkout-item-qty">Qtd: ${i.qty} ${i.size ? `· Tamanho: ${i.size}` : ''}</div>
+          ${buildVariantTags(i)}
+        </div>
+        <div class="checkout-item-price">${fmtPrice(unitTotal)}</div>
+      </div>
+    `}).join('');
+
+    document.getElementById('ckSubtotal').textContent = fmtPrice(sub);
+
+    const discRow = document.getElementById('ckDiscountRow');
+    discRow.style.display = disc > 0 ? 'flex' : 'none';
+    document.getElementById('ckDiscount').textContent = `− ${fmtPrice(disc)}`;
+
+    const pixRow = document.getElementById('ckPixRow');
+    pixRow.style.display = pixDisc > 0 ? 'flex' : 'none';
+    document.getElementById('ckPixDiscount').textContent = `− ${fmtPrice(pixDisc)}`;
+    document.getElementById('pixDiscount').textContent = pixDisc > 0 ? `− ${fmtPrice(pixDisc)}` : '';
+
+    document.getElementById('ckFrete').textContent = ship === null
+      ? 'A calcular' : ship === 0 ? 'Grátis' : fmtPrice(ship);
+    document.getElementById('ckTotal').textContent = fmtPrice(total);
+  }
+
+  function renderShippingOption() {
+    const optEl  = document.getElementById('shippingOptions');
+    const listEl = document.getElementById('shippingOptionsList');
+    if (!optEl || !listEl) return;
+    const ship = getShipping();
+    if (ship === null) {
+      optEl.style.display = 'none';
+      listEl.innerHTML = '';
+      return;
+    }
+    optEl.style.display = 'block';
+    listEl.innerHTML = `
+      <label class="payment-method selected" style="margin-bottom:8px">
+        <input type="radio" name="shipping" value="${ship}" checked>
+        <span>
+          <strong style="display:block;font-size:13px;margin-bottom:2px">
+            ${ship === 0 ? 'Frete grátis' : `Sedex — ${fmtPrice(ship)}`}
+          </strong>
+          <span style="font-size:12px;color:var(--color-text-light)">5 a 8 dias úteis após produção</span>
+        </span>
+      </label>
+    `;
+  }
+
+  /* === MÉTODO DE ENTREGA === */
+  window.setDeliveryOption = (method) => {
+    Cart.setDeliveryMethod(method);
+    ['delivery','pickup'].forEach(m => {
+      document.getElementById(`dm-${m}`)?.classList.toggle('selected', m === method);
+    });
+    const isPickup = method === 'pickup';
+    document.getElementById('panelDelivery').style.display = isPickup ? 'none' : 'block';
+    document.getElementById('panelPickup').style.display   = isPickup ? 'block' : 'none';
+    renderSummary();
+  };
+
+  // Restore delivery method from Cart state on load
+  const _storedMethod = Cart.getDeliveryMethod();
+  if (_storedMethod === 'pickup') {
+    // defer until DOM ready
+    setTimeout(() => setDeliveryOption('pickup'), 0);
+  }
+
+  /* === STEPS === */
+  window.goToStep = (n) => {
+    if (n === 2 && !validateStep1()) return;
+    if (n === 3 && !validateStep2()) return;
+
+    currentStep = n;
+    [1,2,3].forEach(s => {
+      document.getElementById(`step${s}`).style.display = s === n ? 'block' : 'none';
+      const ind = document.getElementById(`step${s}-indicator`);
+      ind.classList.toggle('active', s === n);
+      ind.classList.toggle('done',   s < n);
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  /* === VALIDAÇÕES === */
+  function setErr(id, msg) {
+    const el = document.getElementById(id + 'Err');
+    if (el) el.textContent = msg;
+  }
+  function clearErr(id) {
+    const el = document.getElementById(id + 'Err');
+    if (el) el.textContent = '';
+  }
+  function clearErrors() {
+    document.querySelectorAll('.field-error').forEach(e => e.textContent = '');
+  }
+
+  function validateStep1() {
+    clearErrors();
+    let ok = true;
+    const name = document.getElementById('cName').value.trim();
+    const email = document.getElementById('cEmail').value.trim();
+    if (!name) { setErr('cName', 'Nome obrigatório'); ok = false; }
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setErr('cEmail', 'E-mail inválido'); ok = false; }
+    return ok;
+  }
+
+  function validateStep2() {
+    clearErrors();
+    // Pickup: no address validation needed
+    if (Cart.getDeliveryMethod() === 'pickup') return true;
+
+    let ok = true;
+    const fields = [
+      ['shipZip', 'CEP obrigatório'],
+      ['shipStreet', 'Rua obrigatória'],
+      ['shipNumber', 'Número obrigatório'],
+      ['shipNeighborhood', 'Bairro obrigatório'],
+      ['shipCity', 'Cidade obrigatória'],
+      ['shipState', 'Estado obrigatório'],
+    ];
+    for (const [id, msg] of fields) {
+      if (!document.getElementById(id)?.value.trim()) {
+        setErr(id, msg); ok = false;
+      }
+    }
+    const cep = document.getElementById('shipZip')?.value.replace(/\D/g,'') || '';
+    if (cep.length !== 8) {
+      setErr('shipZip', 'CEP deve ter 8 dígitos');
+      ok = false;
+    } else if (getShipping() === null || Cart.shippingZip() !== cep) {
+      setErr('shipZip', 'Clique em "Buscar" para calcular o frete deste CEP');
+      ok = false;
+    }
+    return ok;
+  }
+
+  /* === BUSCA CEP === */
+  window.doFetchCEP = async () => {
+    const zipEl = document.getElementById('shipZip');
+    const cep   = zipEl?.value.replace(/\D/g,'') || '';
+
+    if (cep.length === 0) {
+      setErr('shipZip', 'Informe o CEP para calcular o frete.');
+      return;
+    }
+    if (cep.length !== 8) {
+      setErr('shipZip', 'CEP deve ter 8 dígitos.');
+      Cart.clearShipping();
+      renderShippingOption();
+      renderSummary();
+      return;
+    }
+
+    // Feedback visual de carregamento
+    const btn = document.querySelector('.btn-calcfrete');
+    const originalText = btn?.textContent;
+    if (btn) { btn.textContent = '...'; btn.disabled = true; }
+
+    try {
+      const data = await api.payment.getShipping(cep);
+      const addr = data.address;
+
+      // Preenche campos de endereço automaticamente
+      const map = { street:'shipStreet', neighborhood:'shipNeighborhood', city:'shipCity', state:'shipState' };
+      Object.entries(map).forEach(([key, id]) => {
+        const el = document.getElementById(id);
+        if (el && addr[key]) el.value = addr[key];
+      });
+
+      // Formata CEP com máscara no campo
+      if (zipEl) zipEl.value = `${cep.slice(0,5)}-${cep.slice(5)}`;
+
+      // Salva no Cart (fonte da verdade)
+      Cart.setShippingFromResponse(data, cep);
+      clearErr('shipZip');
+      renderShippingOption();
+      renderSummary();
+    } catch (err) {
+      Cart.clearShipping();
+      renderShippingOption();
+      renderSummary();
+      const msg = err?.message || 'Não foi possível calcular o frete. Tente novamente.';
+      setErr('shipZip', msg);
+      showToast(msg);
+    } finally {
+      if (btn) { btn.textContent = originalText; btn.disabled = false; }
+    }
+  };
+
+  // Máscara no campo CEP do checkout
+  document.getElementById('shipZip')?.addEventListener('input', (e) => {
+    let v = e.target.value.replace(/\D/g, '').slice(0, 8);
+    e.target.value = v.length > 5 ? `${v.slice(0,5)}-${v.slice(5)}` : v;
+
+    // Se o CEP mudou em relação ao que está salvo, limpa o frete
+    const currentCep = v;
+    if (Cart.shippingZip() && Cart.shippingZip() !== currentCep) {
+      Cart.clearShipping();
+      renderShippingOption();
+      renderSummary();
+    }
+  });
+
+  document.getElementById('shipZip')?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); doFetchCEP(); }
+  });
+
+  /* === PAGAMENTO === */
+  window.selectPayment = (radio) => {
+    document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('selected'));
+    radio.closest('.payment-method').classList.add('selected');
+    selectedPayment = radio.value;
+    renderSummary();
+  };
+
+  /* === ENVIO DO FORMULÁRIO === */
+  document.getElementById('checkoutForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!validateStep1() || !validateStep2()) return;
+
+    const btn = document.getElementById('submitBtn');
+    btn.textContent = 'Processando...';
+    btn.disabled = true;
+
+    /* Cria conta se solicitado */
+    if (document.getElementById('saveAccount')?.checked) {
+      const pass = document.getElementById('cPassword')?.value;
+      if (pass && pass.length >= 8) {
+        try {
+          await api.auth.register(
+            document.getElementById('cName').value.trim(),
+            document.getElementById('cEmail').value.trim(),
+            pass
+          );
+        } catch {}
+      }
+    }
+
+    const _isPickup = Cart.getDeliveryMethod() === 'pickup';
+    const payload = {
+      ...Cart.getCheckoutPayload(),
+      customer_name:  document.getElementById('cName').value.trim(),
+      customer_email: document.getElementById('cEmail').value.trim(),
+      customer_phone: document.getElementById('cPhone')?.value.trim() || null,
+      payment_method: selectedPayment,
+      ship_zip:    _isPickup ? null : document.getElementById('shipZip').value.replace(/\D/g,''),
+      ship_street: _isPickup ? null : document.getElementById('shipStreet').value.trim(),
+      ship_number: _isPickup ? null : document.getElementById('shipNumber').value.trim(),
+      ship_complement:   _isPickup ? null : (document.getElementById('shipComplement')?.value.trim() || null),
+      ship_neighborhood: _isPickup ? null : document.getElementById('shipNeighborhood').value.trim(),
+      ship_city:  _isPickup ? null : document.getElementById('shipCity').value.trim(),
+      ship_state: _isPickup ? null : document.getElementById('shipState').value.trim().toUpperCase(),
+    };
+
+    try {
+      const { order } = await api.orders.create(payload);
+
+      /* Mercado Pago — redireciona para checkout MP */
+      if (selectedPayment === 'mercado_pago' && Auth.isLoggedIn()) {
+        try {
+          const { init_point } = await api.payment.createMPPreference(order.id);
+          Cart.clear();
+          window.location.href = init_point;
+          return;
+        } catch {}
+      }
+
+      Cart.clear();
+      renderSuccess(order);
+    } catch (err) {
+      btn.textContent = 'Confirmar pedido';
+      btn.disabled = false;
+      showToast(err.message || 'Erro ao processar pedido. Tente novamente.');
+    }
+  });
+
+  function renderSuccess(order) {
+    document.getElementById('checkoutContent').innerHTML = `
+      <div style="max-width:560px;margin:80px auto;padding:0 48px;text-align:center">
+        <div style="width:64px;height:64px;background:#EAF4EA;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#4A7A4A" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </div>
+        <h2 style="font-family:var(--font-display);font-size:38px;font-weight:300;margin-bottom:16px">Pedido confirmado!</h2>
+        <p style="font-size:14px;color:var(--color-text-muted);margin-bottom:6px">
+          Número do pedido: <strong style="color:var(--color-text);letter-spacing:0.06em">${order.order_number}</strong>
+        </p>
+        <p style="font-size:14px;color:var(--color-text-muted);line-height:1.8;margin-bottom:32px">
+          Você receberá um e-mail de confirmação em breve.
+          Seu pedido será preparado com cuidado e enviado no prazo combinado.
+        </p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+          <a href="cliente.html" class="btn-primary">Acompanhar pedido</a>
+          <a href="../index.html" class="btn-outline">Voltar ao início</a>
+        </div>
+        <div style="margin-top:32px;padding:20px;background:var(--color-bg-alt);text-align:left">
+          <div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-text-light);margin-bottom:12px">Resumo</div>
+          <div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:8px">
+            <span>Total pago</span>
+            <strong>${fmtPrice(order.total)}</strong>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--color-text-muted)">
+            <span>Forma de pagamento</span>
+            <span>${{ pix:'Pix', credit_card:'Cartão', boleto:'Boleto', mercado_pago:'Mercado Pago' }[order.payment_method] || order.payment_method}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--color-text-muted);margin-top:8px">
+            <span>Entrega</span>
+            <span>${order.delivery_method === 'pickup' ? 'Retirada na Loja' : 'Envio'}</span>
+          </div>
+          ${order.delivery_method === 'pickup' ? `
+          <div style="margin-top:12px;padding:12px 14px;background:var(--color-bg);border:0.5px solid var(--color-border);font-size:12px;color:var(--color-text-muted);line-height:1.7">
+            📍 Rua Emílio Costa, nº 30 — Campestre da Serra, RS<br>
+            Entraremos em contato para agendar a retirada.
+          </div>` : ''}
+        </div>
+      </div>
+    `;
+  }
+
+  /* Conta save toggle */
+  document.getElementById('saveAccount')?.addEventListener('change', (e) => {
+    document.getElementById('passwordGroup').style.display = e.target.checked ? 'block' : 'none';
+  });
+
+  /* Endereços salvos se logado */
+  if (Auth.isLoggedIn()) {
+    try {
+      const { addresses } = await api.addresses.list();
+      if (addresses?.length) {
+        const savedEl = document.getElementById('savedAddresses');
+        savedEl.style.display = 'block';
+        savedEl.innerHTML = `
+          <div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-text-light);margin-bottom:10px">Endereços salvos</div>
+          ${addresses.map(a => `
+            <label class="payment-method ${a.is_default ? 'selected' : ''}" style="margin-bottom:8px;cursor:pointer"
+              onclick="fillAddress(${JSON.stringify(a).replace(/"/g,'&quot;')})">
+              <input type="radio" name="savedAddr" value="${a.id}" ${a.is_default ? 'checked' : ''}>
+              <span style="font-size:13px;line-height:1.6">
+                <strong>${a.label}</strong> — ${a.street}, ${a.number}, ${a.city}/${a.state}
+              </span>
+            </label>
+          `).join('')}
+          <label class="payment-method" style="margin-bottom:0;cursor:pointer">
+            <input type="radio" name="savedAddr" value="new">
+            <span style="font-size:13px">Usar novo endereço</span>
+          </label>
+        `;
+        /* Preenche com o padrão */
+        const def = addresses.find(a => a.is_default) || addresses[0];
+        if (def) fillAddress(def);
+      }
+    } catch {}
+  }
+
+  window.fillAddress = (a) => {
+    const map = {
+      zip: 'shipZip', street: 'shipStreet', number: 'shipNumber',
+      complement: 'shipComplement', neighborhood: 'shipNeighborhood',
+      city: 'shipCity', state: 'shipState',
+    };
+    Object.entries(map).forEach(([key, id]) => {
+      const el = document.getElementById(id);
+      if (el && a[key]) el.value = key === 'zip' ? a[key].replace(/(\d{5})(\d{3})/,'$1-$2') : a[key];
+    });
+    const selectedZip = (a.zip || '').replace(/\D/g,'');
+    if (!selectedZip || selectedZip !== Cart.shippingZip()) {
+      Cart.clearShipping();
+      renderShippingOption();
+      renderSummary();
+    }
+  };
+
+  /* Preenche dados do usuário se logado */
+  if (Auth.isLoggedIn()) {
+    const user = Auth.getUser();
+    if (user) {
+      const nameEl  = document.getElementById('cName');
+      const emailEl = document.getElementById('cEmail');
+      if (nameEl  && user.name)  nameEl.value  = user.name;
+      if (emailEl && user.email) emailEl.value = user.email;
+    }
+  }
+
+  const storedZip = Cart.shippingZip();
+  const storedAddress = Cart.shippingAddress();
+  if (storedZip) {
+    const zipEl = document.getElementById('shipZip');
+    const rawZip = String(storedZip).replace(/\D/g, '');
+    if (zipEl) zipEl.value = rawZip.length === 8 ? `${rawZip.slice(0,5)}-${rawZip.slice(5)}` : rawZip;
+  }
+  if (storedAddress) {
+    const map = { street:'shipStreet', neighborhood:'shipNeighborhood', city:'shipCity', state:'shipState' };
+    Object.entries(map).forEach(([key, id]) => {
+      const el = document.getElementById(id);
+      if (el && storedAddress[key]) el.value = storedAddress[key];
+    });
+  }
+  renderShippingOption();
+  renderSummary();
+})();
+</script>
+</body>
+</html>

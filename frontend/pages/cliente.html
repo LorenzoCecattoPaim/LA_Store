@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#FAFAF8">
+<title>Minha Conta — L.A. STORE</title>
+<link rel="icon" type="image/svg+xml" href="../assets/svg/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+<script>window.LASTORE_API_URL = 'https://lastore-api.onrender.com/api';</script>
+</head>
+<body>
+
+<header class="site-header" id="site-header">
+  <div class="header-inner">
+    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu"><span></span><span></span><span></span></button>
+    <a href="../index.html" class="logo"><img class="logo-symbol" src="../assets/svg/lastore-logo-mono.svg" alt="" aria-hidden="true" width="28" height="28"><span class="logo-wordmark"><span class="logo-deco">L.A.</span> <span class="logo-risa">STORE</span></span></a>
+    <nav class="main-nav" id="mainNav">
+      <ul>
+        <li><a href="loja.html">Loja</a></li>
+        <li><a href="sobre.html">Sobre</a></li>
+        <li><a href="contato.html">Contato</a></li>
+        <li id="adminLink" style="display:none"><a href="admin.html">Admin</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <a href="cliente.html" class="action-link">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </a>
+      <button class="cart-toggle" id="cartToggle" aria-label="Carrinho">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        <span class="cart-count" id="cartCount">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<aside class="cart-drawer" id="cartDrawer" aria-hidden="true">
+  <div class="cart-overlay" id="cartOverlay"></div>
+  <div class="cart-panel">
+    <div class="cart-header"><h2>Seu Carrinho</h2>
+      <button class="cart-close" id="cartClose"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="cart-body" id="cartBody">
+      <div class="cart-empty" id="cartEmpty"><p style="color:var(--color-text-light);font-size:13px">Carrinho vazio.</p><a href="loja.html" class="btn-primary" style="margin-top:12px">Ver loja</a></div>
+      <ul class="cart-items" id="cartItems"></ul>
+    </div>
+    <div class="cart-footer" id="cartFooter" style="display:none">
+      <div class="cart-totals"><div class="total-row total-final"><span>Total</span><span id="cartTotal">R$ 0,00</span></div></div>
+      <a href="checkout.html" class="btn-primary btn-block">Finalizar pedido</a>
+    </div>
+  </div>
+</aside>
+
+<main>
+  <!-- AUTH -->
+  <div id="authWrap" style="display:none">
+    <div style="max-width:440px;margin:80px auto;padding:0 32px">
+      <div style="text-align:center;margin-bottom:40px">
+        <div class="eyebrow eyebrow-center" style="justify-content:center"><span class="eyebrow-line"></span>Acesso<span class="eyebrow-line"></span></div>
+        <h1 class="section-title" style="font-size:36px;margin-top:8px">Minha <em>Conta</em></h1>
+      </div>
+
+      <div style="display:flex;border-bottom:0.5px solid var(--color-border);margin-bottom:28px">
+        <button id="tabLogin" onclick="switchTab('login')"
+          style="flex:1;padding:12px;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;background:none;border:none;cursor:pointer;font-family:var(--font-body);color:var(--color-text);border-bottom:2px solid var(--color-text);margin-bottom:-0.5px">
+          Entrar
+        </button>
+        <button id="tabRegister" onclick="switchTab('register')"
+          style="flex:1;padding:12px;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;background:none;border:none;cursor:pointer;font-family:var(--font-body);color:var(--color-text-light);border-bottom:2px solid transparent;margin-bottom:-0.5px">
+          Criar conta
+        </button>
+      </div>
+
+      <!-- LOGIN -->
+      <form id="loginForm" onsubmit="doLogin(event)">
+        <div class="form-group"><label>E-mail</label><input type="email" id="loginEmail" placeholder="seu@email.com" required></div>
+        <div class="form-group"><label>Senha</label><input type="password" id="loginPass" placeholder="••••••••" required></div>
+        <div style="display:flex;justify-content:flex-end;margin-bottom:20px">
+          <a href="#" onclick="showForgot()" style="font-size:11px;color:var(--color-text-light)">Esqueci a senha</a>
+        </div>
+        <p id="loginError" style="font-size:12px;color:#A33;margin-bottom:14px;min-height:16px"></p>
+        <button type="submit" id="loginBtn" class="btn-primary btn-block">Entrar</button>
+      </form>
+
+      <!-- REGISTRO -->
+      <form id="registerForm" style="display:none" onsubmit="doRegister(event)">
+        <div class="form-row">
+          <div class="form-group"><label>Nome *</label><input type="text" id="regName" placeholder="Seu nome" required></div>
+          <div class="form-group"><label>Sobrenome *</label><input type="text" id="regLastName" placeholder="Sobrenome" required></div>
+        </div>
+        <div class="form-group"><label>E-mail *</label><input type="email" id="regEmail" placeholder="seu@email.com" required></div>
+        <div class="form-group"><label>Telefone</label><input type="tel" id="regPhone" placeholder="Fale conosco"></div>
+        <div class="form-group"><label>Senha * (mínimo 8 caracteres)</label><input type="password" id="regPass" placeholder="••••••••" required minlength="8"></div>
+        <div style="margin-bottom:20px">
+          <label style="display:flex;align-items:flex-start;gap:10px;font-size:12px;color:var(--color-text-muted);cursor:pointer;line-height:1.6">
+            <input type="checkbox" style="accent-color:var(--color-text);margin-top:2px" required>
+            Concordo com os <a href="#" style="color:var(--color-text)">Termos</a> e <a href="#" style="color:var(--color-text)">Privacidade</a>
+          </label>
+        </div>
+        <p id="registerError" style="font-size:12px;color:#A33;margin-bottom:14px;min-height:16px"></p>
+        <button type="submit" id="registerBtn" class="btn-primary btn-block">Criar conta</button>
+      </form>
+
+      <!-- ESQUECI A SENHA -->
+      <div id="forgotForm" style="display:none">
+        <h3 style="font-family:var(--font-display);font-size:24px;font-weight:300;margin-bottom:16px">Redefinir senha</h3>
+        <p style="font-size:13px;color:var(--color-text-muted);margin-bottom:20px">Digite seu e-mail para receber o link de redefinição.</p>
+        <div class="form-group"><label>E-mail</label><input type="email" id="forgotEmail" placeholder="seu@email.com" required></div>
+        <p id="forgotMsg" style="font-size:12px;color:var(--color-text-light);margin-bottom:14px;min-height:16px"></p>
+        <div style="display:flex;gap:12px">
+          <button onclick="switchTab('login')" class="btn-ghost">Voltar</button>
+          <button onclick="doForgot()" class="btn-primary">Enviar link</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAINEL CLIENTE -->
+  <div id="clienteWrap" class="cliente-wrap" style="display:none">
+    <div class="cliente-header">
+      <div class="cliente-avatar" id="clienteAvatar" aria-hidden="true">A</div>
+      <div>
+        <div class="cliente-name" id="clienteName">—</div>
+        <div class="cliente-email" id="clienteEmail">—</div>
+      </div>
+      <div style="margin-left:auto;display:flex;gap:12px;flex-wrap:wrap">
+        <a href="loja.html" class="btn-outline" style="font-size:10px;padding:10px 18px">Ver loja</a>
+        <button onclick="api.auth.logout()" class="btn-ghost" style="font-size:10px;padding:10px 18px">Sair</button>
+      </div>
+    </div>
+
+    <div class="cliente-tabs" role="tablist">
+      <button class="cliente-tab active" data-tab="pedidos" role="tab">Pedidos</button>
+      <button class="cliente-tab" data-tab="notificacoes" role="tab">Notificações de Estoque</button>
+      <button class="cliente-tab" data-tab="enderecos" role="tab">Endereços</button>
+      <button class="cliente-tab" data-tab="perfil" role="tab">Perfil</button>
+    </div>
+
+    <div class="cliente-content">
+
+      <!-- PEDIDOS -->
+      <div class="cliente-panel active" id="panel-pedidos" role="tabpanel">
+        <h2 style="font-family:var(--font-display);font-size:28px;font-weight:300;margin-bottom:24px">Meus pedidos</h2>
+        <div id="pedidosList">
+          <p style="font-size:13px;color:var(--color-text-light)">Carregando...</p>
+        </div>
+      </div>
+
+      <!-- NOTIFICAÇÕES DE ESTOQUE -->
+      <div class="cliente-panel" id="panel-notificacoes" role="tabpanel">
+        <h2 style="font-family:var(--font-display);font-size:28px;font-weight:300;margin-bottom:8px">Notificações de Estoque</h2>
+        <p style="font-size:13px;color:var(--color-text-light);margin-bottom:24px">Produtos que você está acompanhando para ser avisado quando voltarem ao estoque.</p>
+        <div id="stockNotifList">
+          <p style="font-size:13px;color:var(--color-text-light)">Carregando...</p>
+        </div>
+      </div>
+
+      <!-- ENDEREÇOS -->
+      <div class="cliente-panel" id="panel-enderecos" role="tabpanel">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
+          <h2 style="font-family:var(--font-display);font-size:28px;font-weight:300">Meus endereços</h2>
+          <button onclick="showAddressForm()" class="btn-outline" style="font-size:10px;padding:10px 18px">+ Novo</button>
+        </div>
+        <div id="addressList" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px"></div>
+        <div id="addressForm" style="display:none;margin-top:28px;max-width:560px">
+          <h3 style="font-family:var(--font-display);font-size:22px;font-weight:400;margin-bottom:20px">Novo endereço</h3>
+          <form onsubmit="saveAddress(event)">
+            <div class="form-row">
+              <div class="form-group"><label>Apelido (ex: Casa)</label><input type="text" id="adLabel" value="Casa"></div>
+              <div class="form-group">
+                <label>CEP *</label>
+                <div style="display:flex;gap:8px">
+                  <input type="text" id="adZip" placeholder="00000-000" maxlength="9" oninput="maskCEP(this)" required style="flex:1">
+                  <button type="button" onclick="fetchAddrCEP()" class="btn-calcfrete">Buscar</button>
+                </div>
+              </div>
+            </div>
+            <div class="form-group"><label>Rua *</label><input type="text" id="adStreet" required></div>
+            <div class="form-row">
+              <div class="form-group"><label>Número *</label><input type="text" id="adNumber" required></div>
+              <div class="form-group"><label>Complemento</label><input type="text" id="adComplement"></div>
+            </div>
+            <div class="form-group"><label>Bairro *</label><input type="text" id="adNeighborhood" required></div>
+            <div class="form-row">
+              <div class="form-group"><label>Cidade *</label><input type="text" id="adCity" required></div>
+              <div class="form-group"><label>Estado *</label><input type="text" id="adState" maxlength="2" required style="text-transform:uppercase"></div>
+            </div>
+            <label style="display:flex;align-items:center;gap:10px;font-size:13px;margin-bottom:20px;cursor:pointer">
+              <input type="checkbox" id="adDefault" style="accent-color:var(--color-text)"> Usar como endereço principal
+            </label>
+            <div style="display:flex;gap:12px">
+              <button type="button" onclick="hideAddressForm()" class="btn-ghost">Cancelar</button>
+              <button type="submit" class="btn-primary">Salvar endereço</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- PERFIL -->
+      <div class="cliente-panel" id="panel-perfil" role="tabpanel">
+        <h2 style="font-family:var(--font-display);font-size:28px;font-weight:300;margin-bottom:24px">Meu perfil</h2>
+        <form id="perfilForm" style="max-width:560px" onsubmit="savePerfil(event)">
+          <div class="form-row">
+            <div class="form-group"><label>Nome *</label><input type="text" id="perfName" required></div>
+            <div class="form-group"><label>E-mail *</label><input type="email" id="perfEmail" required></div>
+          </div>
+          <div class="form-group"><label>Telefone</label><input type="tel" id="perfPhone" placeholder="Fale conosco"></div>
+          <div style="height:0.5px;background:var(--color-border);margin:24px 0"></div>
+          <h3 style="font-family:var(--font-display);font-size:20px;font-weight:400;margin-bottom:16px">Alterar senha</h3>
+          <p style="font-size:12px;color:var(--color-text-light);margin-bottom:16px">Deixe em branco para não alterar.</p>
+          <div class="form-group"><label>Nova senha</label><input type="password" id="perfPass" placeholder="Mínimo 8 caracteres" minlength="8"></div>
+          <p id="perfilMsg" style="font-size:12px;min-height:16px;margin-bottom:14px"></p>
+          <button type="submit" class="btn-primary">Salvar alterações</button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-top">
+    <div class="footer-col footer-brand">
+      <a href="../index.html" class="footer-brand-name">L.A. STORE</a>
+      <p class="footer-desc">BIAMAR · ANSELMI · MULTIMARCAS. Moda feminina, masculina e infantil.</p>
+    </div>
+    <div class="footer-col"><h3 class="footer-col-title">Loja</h3><ul class="footer-links"><li><a href="loja.html">Todos os produtos</a></li></ul></div>
+    <div class="footer-col"><h3 class="footer-col-title">Info</h3><ul class="footer-links"><li><a href="sobre.html">Sobre</a></li><li><a href="contato.html">Contato</a></li></ul></div>
+    <div class="footer-col"><h3 class="footer-col-title">Newsletter</h3><form class="newsletter-form"><div class="newsletter-row"><input type="email" placeholder="seu@email.com" required><button type="submit">→</button></div><p class="newsletter-msg"></p></form></div>
+  </div>
+  <div class="footer-bottom"><p class="footer-copy">© 2026 L.A. STORE. Todos os direitos reservados.</p><div class="footer-payment"><span>Pix</span><span>Cartão</span><span>Boleto</span></div></div>
+</footer>
+
+<div class="toast" id="toast" role="alert" aria-live="polite"></div>
+<a href="https://wa.me/5500000000000" class="whatsapp-float" target="_blank" rel="noopener" aria-label="WhatsApp">
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<script src="../js/api.js"></script>
+<script src="../js/cart.js"></script>
+<script src="../js/main.js"></script>
+<script>
+(async () => {
+  /* === TABS === */
+  document.querySelectorAll('.cliente-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.cliente-tab').forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected','false'); });
+      document.querySelectorAll('.cliente-panel').forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      tab.setAttribute('aria-selected','true');
+      document.getElementById(`panel-${tab.dataset.tab}`)?.classList.add('active');
+      if (tab.dataset.tab === 'enderecos') loadAddresses();
+      if (tab.dataset.tab === 'notificacoes') loadStockNotifications();
+    });
+  });
+
+  /* === AUTH CHECK === */
+  function showPanel() {
+    document.getElementById('authWrap').style.display    = 'none';
+    document.getElementById('clienteWrap').style.display = 'block';
+    const user = Auth.getUser();
+    if (user) {
+      document.getElementById('clienteName').textContent  = user.name;
+      document.getElementById('clienteEmail').textContent = user.email;
+      document.getElementById('clienteAvatar').textContent = user.name[0].toUpperCase();
+      document.getElementById('perfName').value  = user.name;
+      document.getElementById('perfEmail').value = user.email;
+    }
+    loadOrders();
+    if (Auth.isAdmin()) {
+      const al = document.getElementById('adminLink');
+      if (al) al.style.display = 'block';
+    }
+  }
+
+  function showAuth() {
+    document.getElementById('authWrap').style.display    = 'block';
+    document.getElementById('clienteWrap').style.display = 'none';
+  }
+
+  Auth.isLoggedIn() ? showPanel() : showAuth();
+
+  /* === AUTH FORMS === */
+  window.switchTab = (mode) => {
+    const loginForm  = document.getElementById('loginForm');
+    const regForm    = document.getElementById('registerForm');
+    const forgotForm = document.getElementById('forgotForm');
+    const tl = document.getElementById('tabLogin');
+    const tr = document.getElementById('tabRegister');
+    loginForm.style.display  = mode === 'login'    ? 'block' : 'none';
+    regForm.style.display    = mode === 'register' ? 'block' : 'none';
+    forgotForm.style.display = mode === 'forgot'   ? 'block' : 'none';
+    tl.style.color = mode === 'login'    ? 'var(--color-text)' : 'var(--color-text-light)';
+    tl.style.borderBottomColor = mode === 'login' ? 'var(--color-text)' : 'transparent';
+    tr.style.color = mode === 'register' ? 'var(--color-text)' : 'var(--color-text-light)';
+    tr.style.borderBottomColor = mode === 'register' ? 'var(--color-text)' : 'transparent';
+  };
+
+  window.showForgot = () => switchTab('forgot');
+
+  window.doLogin = async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('loginBtn');
+    const err = document.getElementById('loginError');
+    btn.textContent = 'Entrando...'; btn.disabled = true; err.textContent = '';
+    try {
+      await api.auth.login(
+        document.getElementById('loginEmail').value,
+        document.getElementById('loginPass').value
+      );
+      showPanel();
+    } catch (ex) {
+      err.textContent = ex.message;
+      btn.textContent = 'Entrar'; btn.disabled = false;
+    }
+  };
+
+  window.doRegister = async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('registerBtn');
+    const err = document.getElementById('registerError');
+    btn.textContent = 'Criando conta...'; btn.disabled = true; err.textContent = '';
+    try {
+      await api.auth.register(
+        `${document.getElementById('regName').value} ${document.getElementById('regLastName').value}`.trim(),
+        document.getElementById('regEmail').value,
+        document.getElementById('regPass').value,
+        document.getElementById('regPhone')?.value || undefined
+      );
+      showPanel();
+      showToast('Conta criada! Bem-vinda à L.A. STORE.');
+    } catch (ex) {
+      err.textContent = ex.message;
+      btn.textContent = 'Criar conta'; btn.disabled = false;
+    }
+  };
+
+  window.doForgot = async () => {
+    const email = document.getElementById('forgotEmail')?.value;
+    const msg   = document.getElementById('forgotMsg');
+    if (!email) return;
+    try {
+      await api.auth.forgotPassword(email);
+      msg.textContent = 'Se o e-mail existir, enviaremos as instruções.';
+      msg.style.color = '#4A7A4A';
+    } catch { msg.textContent = 'Erro ao enviar. Tente novamente.'; msg.style.color = '#A33'; }
+  };
+
+  /* === PEDIDOS === */
+  async function loadOrders() {
+    const el = document.getElementById('pedidosList');
+    try {
+      const { orders } = await api.orders.mine();
+      if (!orders?.length) {
+        el.innerHTML = `<p style="font-size:14px;color:var(--color-text-light)">Você ainda não fez nenhum pedido. <a href="loja.html" style="color:var(--color-text)">Explorar loja →</a></p>`;
+        return;
+      }
+      el.innerHTML = orders.map(o => `
+        <div class="pedido-card">
+          <div class="pedido-header">
+            <div>
+              <span class="pedido-num">Pedido ${o.order_number}</span>
+              <span style="margin-left:12px;font-size:11px;color:var(--color-text-light)">${fmtDate(o.created_at)}</span>
+            </div>
+            ${statusBadge(o.status)}
+          </div>
+          <div style="font-size:13px;color:var(--color-text-muted);margin-bottom:10px">
+            ${(o.order_items || []).map(i => {
+              const parts = [i.product_name + ' × ' + i.quantity];
+              if (i.variant_color) parts.push(`Cor: ${i.variant_color}`);
+              if (i.variant_size)  parts.push(`Tamanho: ${i.variant_size}`);
+              return parts.join(' · ');
+            }).join('<br>')}
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="font-size:15px;font-weight:500">${fmtPrice(o.total)}</span>
+              ${o.delivery_method === 'pickup'
+                ? '<span style="font-size:9px;letter-spacing:0.1em;text-transform:uppercase;padding:2px 7px;background:rgba(74,122,74,0.1);color:#4A7A4A;border:0.5px solid rgba(74,122,74,0.3)">Retirada na Loja</span>'
+                : ''}
+            </div>
+            <a href="#" style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--color-text-light)"
+               onclick="viewOrder('${o.id}',event)">Ver detalhes</a>
+          </div>
+        </div>
+      `).join('');
+    } catch {
+      el.innerHTML = '<p style="font-size:13px;color:#A33">Erro ao carregar pedidos.</p>';
+    }
+  }
+
+  /* === NOTIFICAÇÕES DE ESTOQUE === */
+  async function loadStockNotifications() {
+    const el = document.getElementById('stockNotifList');
+    if (!el) return;
+    el.innerHTML = '<p style="font-size:13px;color:var(--color-text-light)">Carregando...</p>';
+    try {
+      const { notifications } = await api.stockNotifications.mine();
+      if (!notifications?.length) {
+        el.innerHTML = `<p style="font-size:14px;color:var(--color-text-light)">Você ainda não está acompanhando nenhum produto. <a href="loja.html" style="color:var(--color-text)">Explorar loja →</a></p>`;
+        return;
+      }
+      el.innerHTML = notifications.map(n => {
+        const p = n.product || {};
+        const cover = (p.images || []).find(i => i.is_cover) || p.images?.[0];
+        const prodStock = Number(p.stock ?? 0);
+        const prodUrl   = `produto.html?slug=${p.slug || ''}`;
+
+        // Determina o rótulo de status:
+        // - 'notified'      → notificação foi enviada
+        // - 'pending' e estoque > 0  → produto voltou mas notificação não foi processada ainda
+        // - 'pending' e estoque = 0  → aguardando reposição normalmente
+        let statusLabel;
+        if (n.status === 'notified') {
+          statusLabel = '<span style="font-size:10px;letter-spacing:0.06em;text-transform:uppercase;padding:3px 9px;background:rgba(74,122,74,0.1);color:#4A7A4A;border-radius:10px">✓ Notificação enviada</span>';
+        } else if (n.status === 'pending' && prodStock > 0) {
+          statusLabel = '<span style="font-size:10px;letter-spacing:0.06em;text-transform:uppercase;padding:3px 9px;background:rgba(74,122,74,0.15);color:#2A6A2A;border-radius:10px">Produto disponível!</span>';
+        } else {
+          statusLabel = '<span style="font-size:10px;letter-spacing:0.06em;text-transform:uppercase;padding:3px 9px;background:rgba(0,0,0,0.04);color:var(--color-text-muted);border-radius:10px">Aguardando reposição</span>';
+        }
+
+        // Botão de ação à direita:
+        // - notified ou produto disponível → "Ver Produto"
+        // - pending sem estoque → "Parar de acompanhar"
+        let actionBtn;
+        if (n.status === 'notified' || prodStock > 0) {
+          actionBtn = `<a href="${prodUrl}" class="btn-ghost" style="font-size:10px;padding:8px 14px;white-space:nowrap;text-decoration:none;display:inline-block">Ver produto →</a>`;
+        } else {
+          actionBtn = `<button onclick="cancelStockNotification('${n.id}')" class="btn-ghost" style="font-size:10px;padding:8px 14px;white-space:nowrap">Parar de acompanhar</button>`;
+        }
+
+        return `
+          <div style="display:flex;align-items:center;gap:16px;padding:16px;border:0.5px solid var(--color-border);border-radius:8px;margin-bottom:12px">
+            <div style="width:56px;height:56px;border-radius:6px;overflow:hidden;flex-shrink:0;background:#EDE9E3">
+              ${cover ? `<img src="${cover.url}" alt="${p.name||''}" style="width:100%;height:100%;object-fit:cover">` : ''}
+            </div>
+            <div style="flex:1;min-width:0">
+              <a href="${prodUrl}" style="font-size:14px;font-weight:500;color:var(--color-text);text-decoration:none;display:block;margin-bottom:4px">${p.name || 'Produto'}</a>
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                ${statusLabel}
+                <span style="font-size:11px;color:var(--color-text-light)">desde ${fmtDate(n.created_at)}</span>
+                ${n.notified_at ? `<span style="font-size:11px;color:var(--color-text-light)">· avisado em ${fmtDate(n.notified_at)}</span>` : ''}
+              </div>
+            </div>
+            ${actionBtn}
+          </div>
+        `;
+      }).join('');
+    } catch {
+      el.innerHTML = '<p style="font-size:13px;color:#A33">Erro ao carregar notificações.</p>';
+    }
+  }
+
+  window.cancelStockNotification = async (id) => {
+    try {
+      await api.stockNotifications.cancel(id);
+      showToast('Você deixou de acompanhar este produto.');
+      loadStockNotifications();
+    } catch {
+      showToast('Erro ao cancelar. Tente novamente.');
+    }
+  };
+
+  window.viewOrder = async (id, e) => {
+    e?.preventDefault();
+    try {
+      const { order } = await api.orders.get(id);
+      const itemsText = (order.order_items || []).map(i => {
+        let line = `${i.product_name} × ${i.quantity} — ${fmtPrice(i.total_price)}`;
+        const customs = [];
+        if (i.variant_color) customs.push(`Cor: ${i.variant_color}`);
+        if (i.variant_size)  customs.push(`Tamanho: ${i.variant_size}`);
+        if (customs.length) line += `\n  ↳ ${customs.join(' · ')}`;
+        return line;
+      }).join('\n');
+      alert(`Pedido ${order.order_number}\nStatus: ${order.status}\nTotal: ${fmtPrice(order.total)}\n\nItens:\n${itemsText}`);
+    } catch { showToast('Erro ao carregar detalhes do pedido.'); }
+  };
+
+  /* === ENDEREÇOS === */
+  async function loadAddresses() {
+    const el = document.getElementById('addressList');
+    try {
+      const { addresses } = await api.addresses.list();
+      if (!addresses?.length) {
+        el.innerHTML = `<p style="font-size:14px;color:var(--color-text-light)">Nenhum endereço salvo ainda.</p>`;
+        return;
+      }
+      el.innerHTML = addresses.map(a => `
+        <div style="border:0.5px solid var(--color-border);padding:20px 24px;position:relative">
+          ${a.is_default ? `<span style="position:absolute;top:12px;right:12px;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;background:var(--color-bg-dark);color:var(--color-bg);padding:3px 8px">Principal</span>` : ''}
+          <p style="font-size:13px;color:var(--color-text-muted);line-height:1.7;font-weight:300">
+            <strong style="color:var(--color-text)">${a.label}</strong><br>
+            ${a.street}, ${a.number}${a.complement ? ` - ${a.complement}` : ''}<br>
+            ${a.neighborhood} · ${a.city} — ${a.state}<br>
+            CEP ${a.zip}
+          </p>
+          <div style="display:flex;gap:16px;margin-top:12px">
+            ${!a.is_default ? `<button onclick="setDefault('${a.id}')" style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;background:none;border:none;cursor:pointer;color:var(--color-text-light);font-family:var(--font-body)">Tornar principal</button>` : ''}
+            <button onclick="deleteAddress('${a.id}')" style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;background:none;border:none;cursor:pointer;color:#A33;font-family:var(--font-body)">Remover</button>
+          </div>
+        </div>
+      `).join('');
+    } catch {
+      el.innerHTML = '<p style="font-size:13px;color:#A33">Erro ao carregar endereços.</p>';
+    }
+  }
+
+  window.showAddressForm  = () => { document.getElementById('addressForm').style.display = 'block'; };
+  window.hideAddressForm  = () => { document.getElementById('addressForm').style.display = 'none'; };
+
+  window.fetchAddrCEP = async () => {
+    const cep = document.getElementById('adZip')?.value.replace(/\D/g,'');
+    if (cep?.length !== 8) return;
+    try {
+      const { address } = await api.payment.getShipping(cep);
+      const m = { street:'adStreet', neighborhood:'adNeighborhood', city:'adCity', state:'adState' };
+      Object.entries(m).forEach(([k,id]) => { const el=document.getElementById(id); if(el&&address[k]) el.value=address[k]; });
+    } catch {}
+  };
+
+  window.saveAddress = async (e) => {
+    e.preventDefault();
+    try {
+      await api.addresses.create({
+        label: document.getElementById('adLabel').value,
+        zip:   document.getElementById('adZip').value.replace(/\D/g,''),
+        street:       document.getElementById('adStreet').value,
+        number:       document.getElementById('adNumber').value,
+        complement:   document.getElementById('adComplement').value || null,
+        neighborhood: document.getElementById('adNeighborhood').value,
+        city:  document.getElementById('adCity').value,
+        state: document.getElementById('adState').value.toUpperCase(),
+        is_default: document.getElementById('adDefault')?.checked,
+      });
+      showToast('Endereço salvo!');
+      hideAddressForm();
+      loadAddresses();
+    } catch (err) { showToast(err.message); }
+  };
+
+  window.setDefault = async (id) => {
+    try {
+      await api.addresses.update(id, { is_default: true });
+      loadAddresses();
+      showToast('Endereço principal atualizado!');
+    } catch (err) { showToast(err.message); }
+  };
+
+  window.deleteAddress = async (id) => {
+    if (!confirm('Remover este endereço?')) return;
+    try {
+      await api.addresses.delete(id);
+      loadAddresses();
+      showToast('Endereço removido.');
+    } catch (err) { showToast(err.message); }
+  };
+
+  /* === PERFIL === */
+  window.savePerfil = async (e) => {
+    e.preventDefault();
+    const msg = document.getElementById('perfilMsg');
+    const payload = {
+      name:  document.getElementById('perfName').value,
+      email: document.getElementById('perfEmail').value,
+      phone: document.getElementById('perfPhone')?.value || null,
+    };
+    const pass = document.getElementById('perfPass')?.value;
+    if (pass) payload.password = pass;
+    try {
+      await api.auth.updateProfile(payload);
+      msg.textContent = '✓ Perfil atualizado!';
+      msg.style.color = '#4A7A4A';
+      document.getElementById('clienteName').textContent = payload.name;
+      setTimeout(() => { msg.textContent = ''; }, 3000);
+    } catch (err) {
+      msg.textContent = err.message;
+      msg.style.color = '#A33';
+    }
+  };
+
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="index,follow">
+<meta name="theme-color" content="#FAFAF8">
+<meta name="description" content="Novidades L.A. STORE — Novas coleções, lançamentos exclusivos e edições limitadas.">
+<meta property="og:title" content="Lançamentos — L.A. STORE">
+<meta property="og:description" content="Novas coleções e lançamentos exclusivos L.A. STORE.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../assets/svg/lastore-logo.svg">
+<meta property="og:site_name" content="L.A. STORE">
+<meta name="twitter:card" content="summary_large_image">
+<title id="pageTitle">Lançamentos — L.A. STORE</title>
+<link rel="icon" type="image/svg+xml" href="../assets/svg/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+<script>window.LASTORE_API_URL = 'https://lastore-api.onrender.com/api';</script>
+<style>
+/* ====================================================
+   LANÇAMENTOS PAGE STYLES
+   ==================================================== */
+.launch-hero {
+  padding: 120px var(--space-xl) 80px;
+  text-align: center;
+  background: var(--color-bg);
+  position: relative;
+  overflow: hidden;
+}
+.launch-hero::before {
+  content: 'L';
+  position: absolute;
+  font-family: var(--font-display);
+  font-size: 28vw;
+  font-weight: 300;
+  color: rgba(0,0,0,0.025);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  pointer-events: none;
+  line-height: 1;
+}
+.launch-hero .eyebrow { justify-content: center; margin-bottom: 24px; }
+.launch-hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.8rem, 6vw, 5rem);
+  font-weight: 300;
+  color: var(--color-text);
+  line-height: 1.1;
+  margin-bottom: 20px;
+}
+.launch-hero-sub {
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: var(--color-text-light);
+  max-width: 520px;
+  margin: 0 auto;
+  line-height: 1.8;
+}
+
+/* Lista de Lançamentos */
+.launches-section { padding: var(--space-3xl) var(--space-xl); background: var(--color-bg); }
+.launches-section .container { max-width: 1200px; margin: 0 auto; }
+
+.launches-grid { display: flex; flex-direction: column; gap: 80px; }
+
+.launch-item {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: center;
+}
+.launch-item.reverse { direction: rtl; }
+.launch-item.reverse > * { direction: ltr; }
+
+.launch-cover {
+  aspect-ratio: 4/5;
+  background: var(--color-bg-alt);
+  overflow: hidden;
+  position: relative;
+}
+.launch-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.7s ease;
+}
+.launch-cover:hover img { transform: scale(1.04); }
+.launch-cover-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg-alt);
+}
+.launch-cover-placeholder svg { opacity: 0.2; }
+
+.launch-info { padding: 24px 0; }
+.launch-num {
+  font-family: var(--font-body);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-bottom: 16px;
+}
+.launch-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  font-weight: 300;
+  color: var(--color-text);
+  line-height: 1.2;
+  margin-bottom: 12px;
+}
+.launch-subtitle {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-style: italic;
+  color: var(--color-text-light);
+  margin-bottom: 20px;
+}
+.launch-desc {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-text-light);
+  line-height: 1.8;
+  margin-bottom: 32px;
+  max-width: 440px;
+}
+.launch-products-preview {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+.launch-product-thumb {
+  width: 60px;
+  height: 60px;
+  background: var(--color-bg-alt);
+  overflow: hidden;
+  position: relative;
+}
+.launch-product-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.launch-product-count {
+  width: 60px;
+  height: 60px;
+  background: var(--color-bg-alt);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-body);
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+
+/* Detalhe de um lançamento (single) */
+.launch-single-hero {
+  min-height: 60vh;
+  display: flex;
+  align-items: flex-end;
+  position: relative;
+  overflow: hidden;
+  background: var(--color-bg-alt);
+  padding: 80px var(--space-xl) 60px;
+}
+.launch-single-bg {
+  position: absolute;
+  inset: 0;
+}
+.launch-single-bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.45;
+}
+.launch-single-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(249,247,244,0.97) 0%, rgba(249,247,244,0.4) 60%, transparent 100%);
+}
+.launch-single-content {
+  position: relative;
+  z-index: 2;
+  max-width: 660px;
+}
+.launch-single-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  font-weight: 300;
+  color: var(--color-text);
+  line-height: 1.1;
+  margin-bottom: 16px;
+}
+.launch-single-subtitle {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 18px;
+  color: var(--color-text-light);
+  margin-bottom: 20px;
+}
+.launch-single-desc {
+  font-size: 14px;
+  color: var(--color-text-light);
+  line-height: 1.9;
+  max-width: 520px;
+}
+.launch-single-products {
+  padding: 80px var(--space-xl);
+  background: var(--color-bg);
+}
+.launch-single-products .container { max-width: 1200px; margin: 0 auto; }
+
+/* Estado vazio */
+.launches-empty {
+  text-align: center;
+  padding: 80px 0;
+  color: var(--color-text-muted);
+}
+.launches-empty p { font-size: 15px; margin-top: 16px; }
+
+/* ---- BREADCRUMB ---- */
+.breadcrumb {
+  padding: 20px var(--space-xl);
+  background: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
+}
+.breadcrumb-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+.breadcrumb a { color: inherit; text-decoration: none; }
+.breadcrumb a:hover { color: var(--color-text); }
+.breadcrumb-sep { opacity: 0.4; }
+
+/* Mobile */
+@media (max-width: 768px) {
+  .launch-hero { padding: 100px 20px 60px; }
+  .launch-item { grid-template-columns: 1fr; gap: 32px; }
+  .launch-item.reverse { direction: ltr; }
+  .launches-grid { gap: 64px; }
+  .launches-section { padding: 60px 20px; }
+  .launch-single-hero { padding: 100px 20px 48px; min-height: 50vh; }
+  .launch-single-products { padding: 60px 20px; }
+  .breadcrumb { padding: 16px 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header" id="site-header">
+  <div class="header-inner">
+    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu"><span></span><span></span><span></span></button>
+    <a href="../index.html" class="logo" aria-label="L.A. STORE — Home">
+      <img class="logo-symbol" src="../assets/svg/lastore-logo-mono.svg" alt="" aria-hidden="true" width="28" height="28">
+      <span class="logo-wordmark"><span class="logo-deco">L.A.</span> <span class="logo-risa">STORE</span></span>
+    </a>
+    <nav class="main-nav" id="mainNav" aria-label="Navegação principal">
+      <ul>
+        <li><a href="loja.html">Loja</a></li>
+        <li><a href="../index.html#lancamentos" class="nav-active">Lançamentos</a></li>
+        <li><a href="sobre.html">Sobre</a></li>
+        <li><a href="contato.html">Contato</a></li>
+        <li id="adminLink" style="display:none"><a href="admin.html">Admin</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <a href="cliente.html" class="action-link" aria-label="Minha conta">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </a>
+      <button class="cart-toggle" id="cartToggle" aria-label="Carrinho">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        <span class="cart-count" id="cartCount">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- CART DRAWER (mesmo padrão do site) -->
+<aside class="cart-drawer" id="cartDrawer" aria-label="Carrinho" aria-hidden="true">
+  <div class="cart-overlay" id="cartOverlay"></div>
+  <div class="cart-panel">
+    <div class="cart-header">
+      <h2>Seu Carrinho</h2>
+      <button class="cart-close" id="cartClose" aria-label="Fechar carrinho">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="cart-body" id="cartBody">
+      <div class="cart-empty" id="cartEmpty">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        <p>Seu carrinho está vazio.</p>
+        <a href="loja.html" class="btn-primary">Explorar loja</a>
+      </div>
+      <ul class="cart-items" id="cartItems"></ul>
+    </div>
+    <div class="cart-footer" id="cartFooter" style="display:none">
+      <div class="cart-shipping">
+        <label>Calcular frete</label>
+        <div class="shipping-row">
+          <input type="text" id="cepInput" placeholder="00000-000" maxlength="9" oninput="maskCEP(this)">
+          <button onclick="Cart.calcularFrete()" class="btn-calcfrete">Calcular</button>
+        </div>
+        <p class="shipping-result" id="shippingResult"></p>
+      </div>
+      <div class="cart-totals">
+        <div class="total-row"><span>Subtotal</span><span id="cartSubtotal">R$ 0,00</span></div>
+        <div class="total-row" id="discountRow" style="display:none;color:#5A8A5A"><span>Desconto</span><span id="cartDiscount"></span></div>
+        <div class="total-row" id="freteRow" style="display:none"><span>Frete</span><span id="cartFrete"></span></div>
+        <div class="total-row total-final"><span>Total</span><span id="cartTotal">R$ 0,00</span></div>
+      </div>
+      <a href="checkout.html" class="btn-primary btn-block">Finalizar pedido</a>
+    </div>
+  </div>
+</aside>
+
+<!-- CONTEÚDO DINÂMICO -->
+<div id="pageContent">
+  <!-- Renderizado via JS baseado em ?slug= ou listagem -->
+</div>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-top">
+    <div class="footer-col footer-brand">
+      <a href="../index.html" class="footer-brand-name">L.A. STORE</a>
+      <p class="footer-desc">BIAMAR · ANSELMI · MULTIMARCAS. Moda feminina, masculina e infantil.</p>
+      <a href="https://wa.me/5500000000000" class="footer-whatsapp" target="_blank" rel="noopener">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
+        Fale conosco
+      </a>
+    </div>
+    <div class="footer-col">
+      <h3 class="footer-col-title">Loja</h3>
+      <ul class="footer-links">
+        <li><a href="loja.html">Todos os produtos</a></li>
+        <li><a href="lancamentos.html">Lançamentos</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h3 class="footer-col-title">Informações</h3>
+      <ul class="footer-links">
+        <li><a href="sobre.html">Sobre a L.A. STORE</a></li>
+        <li><a href="contato.html">Contato</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h3 class="footer-col-title">Newsletter</h3>
+      <p class="footer-newsletter-text">Lançamentos direto no seu e-mail.</p>
+      <form class="newsletter-form">
+        <div class="newsletter-row">
+          <input type="email" placeholder="seu@email.com" required>
+          <button type="submit">→</button>
+        </div>
+        <p class="newsletter-msg"></p>
+      </form>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-copy">© 2026 L.A. STORE. Todos os direitos reservados.</p>
+    <div class="footer-payment"><span>Pix</span><span>Cartão</span><span>Boleto</span></div>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="alert" aria-live="polite"></div>
+<a href="https://wa.me/5500000000000?text=Olá!%20Tenho%20interesse%20nos%20produtos%20da%20L.A.%20STORE!" class="whatsapp-float" target="_blank" rel="noopener" aria-label="Falar no WhatsApp">
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<script src="../js/api.js"></script>
+<script src="../js/cart.js"></script>
+<script src="../js/main.js"></script>
+<script>
+(async () => {
+  /* Verifica se há ?slug= na URL para exibir detalhe de um lançamento */
+  const params = new URLSearchParams(window.location.search);
+  const slug = params.get('slug');
+
+  if (Auth.isAdmin && Auth.isAdmin()) {
+    const al = document.getElementById('adminLink');
+    if (al) al.style.display = '';
+  }
+
+  if (slug) {
+    await renderSingle(slug);
+  } else {
+    await renderList();
+  }
+
+  initReveal();
+})();
+
+/* ── LISTAGEM ── */
+async function renderList() {
+  try {
+    const { launches } = await api.launches.list({ limit: 20 });
+
+    // SEO: mantém o meta default (lançamentos gerais)
+
+    const html = launches && launches.length > 0
+      ? renderLaunchesList(launches)
+      : renderEmpty();
+
+    document.getElementById('pageContent').innerHTML = `
+      <nav class="breadcrumb" aria-label="Navegação em migalhas">
+        <div class="breadcrumb-inner">
+          <a href="../index.html">Home</a>
+          <span class="breadcrumb-sep">—</span>
+          <span>Lançamentos</span>
+        </div>
+      </nav>
+      <section class="launch-hero">
+        <div class="eyebrow eyebrow-center">
+          <span class="eyebrow-line"></span>Novidades<span class="eyebrow-line"></span>
+        </div>
+        <h1 class="launch-hero-title">Lançamentos <em>L.A. STORE</em></h1>
+        <p class="launch-hero-sub">Novas coleções, edições limitadas e peças recém-chegadas ao nosso ateliê em Campestre da Serra.</p>
+      </section>
+      <section class="launches-section">
+        <div class="container">
+          ${html}
+        </div>
+      </section>
+    `;
+  } catch (e) {
+    document.getElementById('pageContent').innerHTML = renderEmpty();
+  }
+}
+
+function renderLaunchesList(launches) {
+  return `<div class="launches-grid">
+    ${launches.map((l, i) => `
+      <article class="launch-item ${i % 2 === 1 ? 'reverse' : ''} reveal">
+        <a href="lancamentos.html?slug=${l.slug}" class="launch-cover">
+          ${l.cover_url
+            ? `<img src="${l.cover_url}" alt="${escHtml(l.title)}" loading="lazy">`
+            : `<div class="launch-cover-placeholder"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>`
+          }
+        </a>
+        <div class="launch-info">
+          <p class="launch-num">Lançamento ${String(i + 1).padStart(2, '0')}</p>
+          <h2 class="launch-title">${escHtml(l.title)}</h2>
+          ${l.subtitle ? `<p class="launch-subtitle">${escHtml(l.subtitle)}</p>` : ''}
+          ${l.description ? `<p class="launch-desc">${escHtml(l.description)}</p>` : ''}
+          <a href="lancamentos.html?slug=${l.slug}" class="btn-outline">Explorar coleção</a>
+        </div>
+      </article>
+    `).join('')}
+  </div>`;
+}
+
+function renderEmpty() {
+  return `<div class="launches-empty">
+    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    <p>Nenhum lançamento disponível no momento.<br>Volte em breve.</p>
+  </div>`;
+}
+
+/* ── DETALHE ── */
+async function renderSingle(slug) {
+  try {
+    const { launch, products } = await api.launches.get(slug);
+
+    // Atualiza SEO dinâmico
+    document.title = `${launch.meta_title || launch.title} — L.A. STORE`;
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) metaDesc.content = launch.meta_desc || launch.description || '';
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) ogTitle.content = `${launch.title} — L.A. STORE`;
+    const ogDesc = document.querySelector('meta[property="og:description"]');
+    if (ogDesc) ogDesc.content = launch.description || '';
+    if (launch.cover_url) {
+      const ogImg = document.querySelector('meta[property="og:image"]');
+      if (ogImg) ogImg.content = launch.cover_url;
+    }
+
+    const productsHTML = products && products.length > 0
+      ? `<section class="launch-single-products">
+          <div class="container">
+            <div class="section-header">
+              <div class="eyebrow"><span class="eyebrow-line"></span>Coleção</div>
+              <h2 class="section-title">Peças desta <em>coleção</em></h2>
+              <div class="section-divider"></div>
+            </div>
+            <div class="products-grid">
+              ${products.map(p => renderProductCard(p)).join('')}
+            </div>
+          </div>
+        </section>`
+      : '';
+
+    document.getElementById('pageContent').innerHTML = `
+      <nav class="breadcrumb" aria-label="Navegação em migalhas">
+        <div class="breadcrumb-inner">
+          <a href="../index.html">Home</a>
+          <span class="breadcrumb-sep">—</span>
+          <a href="lancamentos.html">Lançamentos</a>
+          <span class="breadcrumb-sep">—</span>
+          <span>${escHtml(launch.title)}</span>
+        </div>
+      </nav>
+      <section class="launch-single-hero">
+        <div class="launch-single-bg">
+          ${launch.cover_url ? `<img src="${launch.cover_url}" alt="${escHtml(launch.title)}">` : ''}
+        </div>
+        <div class="launch-single-overlay"></div>
+        <div class="launch-single-content">
+          <div class="eyebrow" style="margin-bottom:20px"><span class="eyebrow-line"></span>Lançamento</div>
+          <h1 class="launch-single-title">${escHtml(launch.title)}</h1>
+          ${launch.subtitle ? `<p class="launch-single-subtitle">${escHtml(launch.subtitle)}</p>` : ''}
+          ${launch.description ? `<p class="launch-single-desc">${escHtml(launch.description)}</p>` : ''}
+        </div>
+      </section>
+      ${productsHTML}
+    `;
+  } catch {
+    document.getElementById('pageContent').innerHTML = `
+      <div style="padding:120px 40px;text-align:center">
+        <p style="color:var(--color-text-muted);font-size:15px">Lançamento não encontrado.</p>
+        <a href="lancamentos.html" class="btn-outline" style="margin-top:24px;display:inline-block">Ver todos os lançamentos</a>
+      </div>`;
+  }
+}
+
+function escHtml(str) {
+  if (!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>

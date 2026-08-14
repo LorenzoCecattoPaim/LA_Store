@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://lastore.com.br/</loc>
+  </url>
+  <url>
+    <loc>https://lastore.com.br/pages/loja.html</loc>
+  </url>
+  <url>
+    <loc>https://lastore.com.br/pages/loja.html?cat=feminino</loc>
+  </url>
+  <url>
+    <loc>https://lastore.com.br/pages/loja.html?cat=masculino</loc>
+  </url>
+  <url>
+    <loc>https://lastore.com.br/pages/loja.html?cat=infantil</loc>
+  </url>
+  <url>
+    <loc>https://lastore.com.br/pages/sobre.html</loc>
+  </url>
+  <url>
+    <loc>https://lastore.com.br/pages/contato.html</loc>
+  </url>
+  <url>
+    <loc>https://lastore.com.br/pages/lancamentos.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+</urlset>

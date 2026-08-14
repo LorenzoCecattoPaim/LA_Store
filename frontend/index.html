@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="index,follow">
+<meta name="theme-color" content="#FAFAF8">
+<meta name="description" content="L.A. STORE — Loja de moda multimarcas. BIAMAR, ANSELMI e outras marcas em uma boutique feminina, masculina e infantil. Moda que combina com você.">
+<meta name="keywords" content="loja de roupas, moda multimarcas, biamar, anselmi, moda feminina, moda masculina, moda infantil, l.a. store">
+<meta property="og:title" content="L.A. STORE — Moda que combina com você">
+<meta property="og:description" content="Boutique multimarcas — BIAMAR, ANSELMI e outras marcas. Moda feminina, masculina e infantil.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="assets/svg/lastore-logo.svg">
+<meta property="og:site_name" content="L.A. STORE">
+<meta name="twitter:card" content="summary_large_image">
+<title>L.A. STORE — Moda que combina com você</title>
+<link rel="icon" type="image/svg+xml" href="assets/svg/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<script>window.LASTORE_API_URL = 'https://lastore-api.onrender.com/api';</script>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header" id="site-header">
+  <div class="header-inner">
+    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu"><span></span><span></span><span></span></button>
+    <a href="index.html" class="logo" aria-label="L.A. STORE — Home">
+      <img class="logo-symbol" src="assets/svg/lastore-logo-mono.svg" alt="" aria-hidden="true" width="28" height="28">
+      <span class="logo-wordmark"><span class="logo-deco">L.A.</span> <span class="logo-risa">STORE</span></span>
+    </a>
+    <nav class="main-nav" id="mainNav" aria-label="Navegação principal">
+      <ul>
+        <li><a href="pages/loja.html?cat=feminino">Feminino</a></li>
+        <li><a href="pages/loja.html?cat=masculino">Masculino</a></li>
+        <li><a href="pages/loja.html?cat=infantil">Infantil</a></li>
+        <li><a href="pages/lancamentos.html">Lançamentos</a></li>
+        <li><a href="pages/sobre.html">Sobre</a></li>
+        <li><a href="pages/contato.html">Contato</a></li>
+        <li id="adminLink" style="display:none"><a href="pages/admin.html">Admin</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <a href="pages/cliente.html" class="action-link" aria-label="Minha conta">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </a>
+      <button class="cart-toggle" id="cartToggle" aria-label="Carrinho">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        <span class="cart-count" id="cartCount">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- CART DRAWER -->
+<aside class="cart-drawer" id="cartDrawer" aria-label="Carrinho" aria-hidden="true">
+  <div class="cart-overlay" id="cartOverlay"></div>
+  <div class="cart-panel">
+    <div class="cart-header">
+      <h2>Sua Sacola</h2>
+      <button class="cart-close" id="cartClose" aria-label="Fechar carrinho">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="cart-body" id="cartBody">
+      <div class="cart-empty" id="cartEmpty">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        <p>Sua sacola está vazia.</p>
+        <a href="pages/loja.html" class="btn-primary">Explorar loja</a>
+      </div>
+      <ul class="cart-items" id="cartItems"></ul>
+    </div>
+    <div class="cart-footer" id="cartFooter" style="display:none">
+      <div class="cart-shipping">
+        <label>Calcular frete</label>
+        <div class="shipping-row">
+          <input type="text" id="cepInput" placeholder="00000-000" maxlength="9" oninput="maskCEP(this)">
+          <button onclick="Cart.calcularFrete()" class="btn-calcfrete">Calcular</button>
+        </div>
+        <p class="shipping-result" id="shippingResult"></p>
+      </div>
+      <div class="cart-coupon">
+        <label>Cupom de desconto</label>
+        <div class="coupon-row">
+          <input type="text" id="couponInput" placeholder="LASTORE10">
+          <button onclick="Cart.aplicarCupom()" class="btn-coupon">Aplicar</button>
+        </div>
+        <p class="coupon-result" id="couponResult"></p>
+      </div>
+      <div class="cart-totals">
+        <div class="total-row"><span>Subtotal</span><span id="cartSubtotal">R$ 0,00</span></div>
+        <div class="total-row" id="discountRow" style="display:none;color:#5A8A5A"><span>Desconto</span><span id="cartDiscount"></span></div>
+        <div class="total-row" id="freteRow" style="display:none"><span>Frete</span><span id="cartFrete"></span></div>
+        <div class="total-row total-final"><span>Total</span><span id="cartTotal">R$ 0,00</span></div>
+      </div>
+      <a href="pages/checkout.html" class="btn-primary btn-block">Finalizar pedido</a>
+      <button onclick="Cart.closeDrawer()" class="btn-ghost btn-block" style="margin-top:10px">Continuar comprando</button>
+    </div>
+  </div>
+</aside>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-left">
+    <div class="hero-bg-letter" aria-hidden="true">L</div>
+    <div class="hero-content animate-in">
+      <div class="eyebrow" id="heroEyebrow"><span class="eyebrow-line"></span>Coleção 2026</div>
+      <h1 class="hero-title" id="heroTitle">L.A. STORE<br>Moda que <em>combina</em><br>com você.</h1>
+      <p class="hero-subtitle" id="heroSubtitle">BIAMAR, ANSELMI e outras marcas selecionadas em uma boutique multimarcas — feminino, masculino e infantil.</p>
+      <div class="hero-ctas">
+        <a href="pages/loja.html" class="btn-primary" id="heroCtaBtn">Comprar agora</a>
+        <a href="pages/lancamentos.html" class="btn-outline">Ver lançamentos</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><strong>3</strong><span>marcas selecionadas</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><strong>F·M·K</strong><span>feminino, masculino e kids</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><strong>5★</strong><span>avaliações</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-visual hero-visual-placeholder" aria-hidden="true">
+      <div class="hero-ph-frame">
+        <span class="hero-ph-label">L.A. STORE</span>
+      </div>
+    </div>
+    <div class="hero-product-tag">
+      <span class="tag-name">Look da semana</span>
+      <span class="tag-info">BIAMAR</span>
+      <span class="tag-price">Confira na loja</span>
+    </div>
+    <div class="hero-scroll-hint" aria-hidden="true">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </div>
+</section>
+
+<!-- VALUES STRIP -->
+<div class="values-strip">
+  <div class="strip-inner">
+    <div class="strip-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Marcas selecionadas</div>
+    <div class="strip-dot">◆</div>
+    <div class="strip-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Novidades toda semana</div>
+    <div class="strip-dot">◆</div>
+    <div class="strip-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.42 4.58a5.4 5.4 0 00-7.65 0l-.77.77-.77-.77a5.4 5.4 0 00-7.65 7.65l.77.77L12 20.66l7.65-7.66.77-.77a5.4 5.4 0 000-7.65z"/></svg>Feminino, Masculino e Infantil</div>
+    <div class="strip-dot">◆</div>
+    <div class="strip-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>Frete para todo Brasil</div>
+    <div class="strip-dot">◆</div>
+    <div class="strip-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 11 19.79 19.79 0 012 2.41 2 2 0 014 .21h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>Dúvidas? WhatsApp</div>
+  </div>
+</div>
+
+<!-- CATEGORIAS -->
+<section class="section-destaques" id="categorias">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow"><span class="eyebrow-line"></span>Categorias</div>
+      <h2 class="section-title">Compre por <em>estilo</em></h2>
+      <div class="section-divider"></div>
+      <p class="section-subtitle">Peças selecionadas para toda a família — feminino, masculino e a linha L.A. STORE KIDS.</p>
+    </div>
+    <div class="products-grid" style="grid-template-columns:repeat(3,1fr)">
+      <a href="pages/loja.html?cat=feminino" class="lancamento-card lancamento-card-light reveal" style="aspect-ratio:3/4">
+        <div class="lancamento-card-inner">
+          <div class="lc-placeholder"><span class="hero-ph-label" style="font-size:13px">FEMININO</span></div>
+          <div class="lc-overlay"></div>
+          <div class="lc-content"><h3 class="lc-title">Feminino</h3><span class="lc-cta">Ver peças →</span></div>
+        </div>
+      </a>
+      <a href="pages/loja.html?cat=masculino" class="lancamento-card lancamento-card-light reveal" style="aspect-ratio:3/4">
+        <div class="lancamento-card-inner">
+          <div class="lc-placeholder"><span class="hero-ph-label" style="font-size:13px">MASCULINO</span></div>
+          <div class="lc-overlay"></div>
+          <div class="lc-content"><h3 class="lc-title">Masculino</h3><span class="lc-cta">Ver peças →</span></div>
+        </div>
+      </a>
+      <a href="pages/loja.html?cat=infantil" class="lancamento-card lancamento-card-light reveal" style="aspect-ratio:3/4">
+        <div class="lancamento-card-inner">
+          <div class="lc-placeholder"><span class="hero-ph-label" style="font-size:13px">INFANTIL</span></div>
+          <div class="lc-overlay"></div>
+          <div class="lc-content"><h3 class="lc-title">Infantil</h3><span class="lc-cta">L.A. STORE KIDS →</span></div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- DESTAQUES / MAIS VENDIDOS -->
+<section class="section-destaques">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow"><span class="eyebrow-line"></span>Mais vendidos</div>
+      <h2 class="section-title">Peças que <em>definem</em> seu estilo</h2>
+      <div class="section-divider"></div>
+      <p class="section-subtitle">Selecionamos as peças mais desejadas da temporada, direto das nossas marcas parceiras.</p>
+    </div>
+    <div class="products-grid" id="destaquesGrid">
+      <!-- skeletons -->
+      <div class="product-card" style="opacity:.3"><div class="product-img-wrap" style="background:var(--color-bg-alt)"></div><div style="height:10px;background:var(--color-bg-alt);margin-top:12px;width:50%"></div><div style="height:18px;background:var(--color-bg-alt);margin-top:8px;width:70%"></div><div style="height:14px;background:var(--color-bg-alt);margin-top:6px;width:35%"></div></div>
+      <div class="product-card" style="opacity:.3"><div class="product-img-wrap" style="background:var(--color-bg-alt)"></div><div style="height:10px;background:var(--color-bg-alt);margin-top:12px;width:50%"></div><div style="height:18px;background:var(--color-bg-alt);margin-top:8px;width:70%"></div><div style="height:14px;background:var(--color-bg-alt);margin-top:6px;width:35%"></div></div>
+      <div class="product-card" style="opacity:.3"><div class="product-img-wrap" style="background:var(--color-bg-alt)"></div><div style="height:10px;background:var(--color-bg-alt);margin-top:12px;width:50%"></div><div style="height:18px;background:var(--color-bg-alt);margin-top:8px;width:70%"></div><div style="height:14px;background:var(--color-bg-alt);margin-top:6px;width:35%"></div></div>
+      <div class="product-card" style="opacity:.3"><div class="product-img-wrap" style="background:var(--color-bg-alt)"></div><div style="height:10px;background:var(--color-bg-alt);margin-top:12px;width:50%"></div><div style="height:18px;background:var(--color-bg-alt);margin-top:8px;width:70%"></div><div style="height:14px;background:var(--color-bg-alt);margin-top:6px;width:35%"></div></div>
+    </div>
+    <div class="section-cta">
+      <a href="pages/loja.html" class="btn-outline">Ver coleção completa</a>
+    </div>
+  </div>
+</section>
+
+<!-- LANÇAMENTOS -->
+<section class="section-lancamentos" id="lancamentos" aria-label="Lançamentos L.A. STORE">
+  <div class="lancamentos-header">
+    <div class="eyebrow eyebrow-center"><span class="eyebrow-line"></span>Novidades<span class="eyebrow-line"></span></div>
+    <h2 class="section-title" style="text-align:center">Lançamentos <em>L.A. STORE</em></h2>
+    <div class="section-divider"></div>
+    <p class="section-subtitle" style="text-align:center">Peças recém-chegadas das nossas marcas, direto para o seu guarda-roupa.</p>
+  </div>
+  <div class="lancamentos-grid" id="lancamentosGrid">
+    <!-- Skeletons -->
+    <div class="lancamento-card lc-skeleton"></div>
+    <div class="lancamento-card lc-skeleton"></div>
+  </div>
+  <div class="section-cta" id="lancamentosCta" style="display:none">
+    <a href="pages/lancamentos.html" class="btn-outline">Ver todos os lançamentos</a>
+  </div>
+</section>
+
+<!-- MARCAS -->
+<section class="section-processo">
+  <div class="processo-header">
+    <div class="eyebrow eyebrow-center"><span class="eyebrow-line"></span>Marcas<span class="eyebrow-line"></span></div>
+    <h2 class="section-title" style="text-align:center">Marcas que <em>escolhemos</em> a dedo</h2>
+    <div class="section-divider"></div>
+    <p class="section-subtitle" style="text-align:center;margin:0 auto">Selecionamos parceiros que combinam qualidade, caimento e identidade.</p>
+  </div>
+  <div class="diferenciais-grid" style="max-width:1000px;margin:40px auto 0;grid-template-columns:repeat(3,1fr)">
+    <div class="diferencial-card reveal" style="background:transparent;text-align:center">
+      <h3 class="diferencial-title" style="font-family:var(--font-display);font-size:26px;font-weight:400">BIAMAR</h3>
+      <p class="diferencial-text">Conforto e elegância no dia a dia.</p>
+    </div>
+    <div class="diferencial-card reveal" style="background:transparent;text-align:center">
+      <h3 class="diferencial-title" style="font-family:var(--font-display);font-size:26px;font-weight:400">ANSELMI</h3>
+      <p class="diferencial-text">Alfaiataria e caimento impecável.</p>
+    </div>
+    <div class="diferencial-card reveal" style="background:transparent;text-align:center">
+      <h3 class="diferencial-title" style="font-family:var(--font-display);font-size:26px;font-weight:400">OUTRAS MARCAS</h3>
+      <p class="diferencial-text">Curadoria multimarcas em constante renovação.</p>
+    </div>
+  </div>
+</section>
+
+<!-- LOOKS L.A. -->
+<section class="section-sobre">
+  <div class="sobre-visual" aria-hidden="true">
+    <div class="sobre-shapes">
+      <div class="sobre-shape shape-tall"></div>
+      <div class="sobre-shape shape-mid"></div>
+      <div class="sobre-shape shape-round"></div>
+    </div>
+    <div class="sobre-studio-tag">Looks L.A. · Editorial da temporada</div>
+  </div>
+  <div class="sobre-content">
+    <div class="eyebrow"><span class="eyebrow-line"></span>Looks L.A.</div>
+    <blockquote class="sobre-quote">"Peças pensadas para combinar entre si."</blockquote>
+    <p class="sobre-text">Montamos combinações prontas — blusa, calça e acessório — para você se inspirar e comprar o look completo em poucos cliques.</p>
+    <p class="sobre-text">Da vitrine para o seu guarda-roupa, com a curadoria L.A. STORE.</p>
+    <a href="pages/loja.html" class="btn-outline">Ver looks da semana</a>
+  </div>
+</section>
+
+<!-- DIFERENCIAIS -->
+<section class="section-diferenciais">
+  <div class="container">
+    <div class="eyebrow eyebrow-light eyebrow-center"><span class="eyebrow-line eyebrow-line-dark"></span>Por que a L.A. STORE<span class="eyebrow-line eyebrow-line-dark"></span></div>
+    <h2 class="section-title" style="color:#F4F3F0;text-align:center;margin-top:8px">O que nos <em>diferencia</em></h2>
+    <div class="section-divider" style="background:rgba(230,228,222,0.3)"></div>
+    <div class="diferenciais-grid">
+      <div class="diferencial-card reveal">
+        <div class="diferencial-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+        <h3 class="diferencial-title">Curadoria Multimarcas</h3>
+        <p class="diferencial-text">BIAMAR, ANSELMI e outras marcas selecionadas com critério — qualidade em primeiro lugar.</p>
+      </div>
+      <div class="diferencial-card reveal">
+        <div class="diferencial-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <h3 class="diferencial-title">Novidades Constantes</h3>
+        <p class="diferencial-text">Lançamentos toda semana para você estar sempre em dia com a moda.</p>
+      </div>
+      <div class="diferencial-card reveal">
+        <div class="diferencial-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M20.42 4.58a5.4 5.4 0 00-7.65 0l-.77.77-.77-.77a5.4 5.4 0 00-7.65 7.65l.77.77L12 20.66l7.65-7.66.77-.77a5.4 5.4 0 000-7.65z"/></svg></div>
+        <h3 class="diferencial-title">Para toda a família</h3>
+        <p class="diferencial-text">Moda feminina, masculina e infantil com a linha L.A. STORE KIDS.</p>
+      </div>
+      <div class="diferencial-card reveal">
+        <div class="diferencial-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 11 19.79 19.79 0 012 2.41 2 2 0 014 .21h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg></div>
+        <h3 class="diferencial-title">Atendimento pelo WhatsApp</h3>
+        <p class="diferencial-text">Tire dúvidas sobre tamanho, cor e disponibilidade direto com a nossa equipe.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEPOIMENTOS -->
+<section class="section-depoimentos">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow"><span class="eyebrow-line"></span>Depoimentos</div>
+      <h2 class="section-title">O que nossas clientes <em>sentem</em></h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="dep-grid">
+      <article class="dep-card reveal">
+        <div class="dep-stars" aria-label="5 estrelas">★★★★★</div>
+        <blockquote class="dep-text">"Comprei uma blusa da BIAMAR e o caimento é perfeito. Atendimento rápido pelo WhatsApp, super recomendo."</blockquote>
+        <footer class="dep-author"><strong>Ana Paula M.</strong><span>Cliente L.A. STORE</span></footer>
+      </article>
+      <article class="dep-card reveal">
+        <div class="dep-stars" aria-label="5 estrelas">★★★★★</div>
+        <blockquote class="dep-text">"Comprei roupinhas para minha filha na L.A. STORE KIDS. Qualidade excelente e chegou rapidinho."</blockquote>
+        <footer class="dep-author"><strong>Fernanda C.</strong><span>Cliente L.A. STORE KIDS</span></footer>
+      </article>
+      <article class="dep-card reveal">
+        <div class="dep-stars" aria-label="5 estrelas">★★★★★</div>
+        <blockquote class="dep-text">"Achei uma calça da ANSELMI que estava procurando há tempos. Loja linda e organizada."</blockquote>
+        <footer class="dep-author"><strong>Lucas R.</strong><span>Cliente L.A. STORE</span></footer>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<section class="section-cta-banner">
+  <div class="cta-banner-inner">
+    <div class="eyebrow eyebrow-light eyebrow-center"><span class="eyebrow-line eyebrow-line-dark"></span>Fale com a gente<span class="eyebrow-line eyebrow-line-dark"></span></div>
+    <h2 class="section-title" style="color:#F4F3F0;text-align:center;margin-top:8px">Dúvidas sobre <em>tamanho ou cor</em>?</h2>
+    <p style="color:#9A9790;text-align:center;font-size:14px;max-width:480px;margin:16px auto 32px;line-height:1.7">Fale com a gente pelo WhatsApp e receba ajuda para escolher a peça certa.</p>
+    <div style="display:flex;justify-content:center;gap:16px;flex-wrap:wrap">
+      <a href="https://wa.me/5500000000000?text=Ol%C3%A1!%20Quero%20ajuda%20para%20escolher%20uma%20pe%C3%A7a%20na%20L.A.%20STORE!" class="btn-primary" target="_blank" rel="noopener">Falar no WhatsApp</a>
+      <a href="pages/loja.html" class="btn-outline-light">Ver catálogo</a>
+    </div>
+  </div>
+</section>
+
+<!-- INSTAGRAM -->
+<section style="padding:64px 48px;background:var(--color-bg-alt);border-top:0.5px solid var(--color-border)">
+  <div style="max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:40px;flex-wrap:wrap">
+    <div style="display:flex;align-items:flex-start;gap:20px">
+      <div style="width:48px;height:48px;border-radius:50%;background:var(--color-bg);border:0.5px solid var(--color-border);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+      </div>
+      <div>
+        <div class="eyebrow" style="margin-bottom:6px"><span class="eyebrow-line"></span>Siga a gente</div>
+        <div style="font-family:var(--font-display);font-size:22px;font-weight:300;color:var(--color-text);margin-bottom:6px">@l.a.storers</div>
+        <div style="font-size:13px;color:var(--color-text-muted)">L.A. STORE KIDS &nbsp;·&nbsp; @lastorekidss</div>
+      </div>
+    </div>
+    <a href="https://instagram.com/l.a.storers"
+      target="_blank" rel="noopener"
+      style="display:inline-flex;align-items:center;gap:8px;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-text);border:0.5px solid var(--color-border-mid);padding:12px 20px;text-decoration:none;transition:border-color 0.2s;white-space:nowrap"
+      onmouseover="this.style.borderColor='var(--color-text)'" onmouseout="this.style.borderColor='var(--color-border-mid)'">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/></svg>
+      Ver no Instagram
+    </a>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-top">
+    <div class="footer-col footer-brand">
+      <a href="index.html" class="footer-brand-name">L.A. STORE</a>
+      <p class="footer-desc">BIAMAR · ANSELMI · MULTIMARCAS. Moda feminina, masculina e infantil.</p>
+      <a href="https://wa.me/5500000000000" class="footer-whatsapp" target="_blank" rel="noopener">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
+        Fale conosco
+      </a>
+    </div>
+    <div class="footer-col">
+      <h3 class="footer-col-title">Loja</h3>
+      <ul class="footer-links">
+        <li><a href="pages/loja.html">Todos os produtos</a></li>
+        <li><a href="pages/lancamentos.html">Lançamentos</a></li>
+        <li><a href="pages/loja.html?cat=feminino">Feminino</a></li>
+        <li><a href="pages/loja.html?cat=masculino">Masculino</a></li>
+        <li><a href="pages/loja.html?cat=infantil">Infantil · L.A. STORE KIDS</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h3 class="footer-col-title">Informações</h3>
+      <ul class="footer-links">
+        <li><a href="pages/sobre.html">Sobre a L.A. STORE</a></li>
+        <li><a href="pages/contato.html">Contato</a></li>
+        <li><a href="pages/contato.html#faq">FAQ</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h3 class="footer-col-title">Newsletter</h3>
+      <p class="footer-newsletter-text">Lançamentos e promoções direto no seu e-mail.</p>
+      <form class="newsletter-form">
+        <div class="newsletter-row">
+          <input type="email" placeholder="seu@email.com" required>
+          <button type="submit">→</button>
+        </div>
+        <p class="newsletter-msg"></p>
+      </form>
+      <div class="footer-social">
+        <a href="https://instagram.com/l.a.storers" target="_blank" rel="noopener" aria-label="Instagram L.A. STORE">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        </a>
+        <a href="https://instagram.com/lastorekidss" target="_blank" rel="noopener" aria-label="Instagram L.A. STORE KIDS">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-copy">© 2026 L.A. STORE. Todos os direitos reservados.</p>
+    <div class="footer-payment"><span>Pix</span><span>Cartão</span></div>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="alert" aria-live="polite"></div>
+<a href="https://wa.me/5500000000000?text=Ol%C3%A1!%20Tenho%20interesse%20nos%20produtos%20da%20L.A.%20STORE!" class="whatsapp-float" target="_blank" rel="noopener" aria-label="Falar no WhatsApp">
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<script src="js/api.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/main.js"></script>
+<script>
+(async () => {
+  /* Carrega banner do hero via API */
+  try {
+    const { banners } = await api.admin.banners().catch(() => ({ banners: [] }));
+    const hero = banners?.find(b => b.position === 'hero' && b.active);
+    if (hero) {
+      const t = document.getElementById('heroTitle');
+      const s = document.getElementById('heroSubtitle');
+      const e = document.getElementById('heroEyebrow');
+      const b = document.getElementById('heroCtaBtn');
+      if (hero.title    && t) t.innerHTML = hero.title.replace('combina', '<em>combina</em>');
+      if (hero.subtitle && s) s.textContent = hero.subtitle;
+      if (hero.eyebrow  && e) e.innerHTML = `<span class="eyebrow-line"></span>${hero.eyebrow}`;
+      if (hero.cta_label && b) b.textContent = hero.cta_label;
+    }
+  } catch {}
+
+  /* Carrega produtos em destaque */
+  try {
+    const { products } = await api.products.list({ featured: 'true', limit: 4 });
+    const grid = document.getElementById('destaquesGrid');
+    if (products?.length) {
+      grid.innerHTML = products.map(p => renderProductCard(p)).join('');
+      initReveal();
+    }
+  } catch {}
+
+  /* Carrega lançamentos em destaque na home */
+  try {
+    const { launches } = await api.launches.list({ featured_home: 'true', limit: 4 });
+    const grid = document.getElementById('lancamentosGrid');
+    const cta = document.getElementById('lancamentosCta');
+
+    if (launches && launches.length > 0) {
+      const hasWide = launches.length === 1 || launches.length === 3;
+      grid.innerHTML = launches.map((l, i) => {
+        const isWide = hasWide && i === 0;
+        const hasImg = !!l.cover_url;
+        return `
+          <a href="pages/lancamentos.html?slug=${l.slug}" class="lancamento-card ${isWide ? 'lancamento-card-wide' : ''} ${!hasImg ? 'lancamento-card-light' : ''} reveal">
+            <div class="lancamento-card-inner">
+              ${hasImg
+                ? `<img class="lc-img" src="${l.cover_url}" alt="${escHome(l.title)}" loading="lazy">`
+                : `<div class="lc-placeholder"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" opacity="0.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>`
+              }
+              <div class="lc-overlay"></div>
+              <div class="lc-content">
+                <p class="lc-num">Lançamento ${String(i + 1).padStart(2, '0')}</p>
+                <h3 class="lc-title">${escHome(l.title)}</h3>
+                ${l.subtitle ? `<p class="lc-subtitle">${escHome(l.subtitle)}</p>` : ''}
+                <span class="lc-cta">Explorar coleção →</span>
+              </div>
+            </div>
+          </a>`;
+      }).join('');
+      if (cta) cta.style.display = '';
+      initReveal();
+    } else {
+      const sec = document.getElementById('lancamentos');
+      if (sec) sec.style.display = 'none';
+    }
+  } catch {
+    const sec = document.getElementById('lancamentos');
+    if (sec) sec.style.display = 'none';
+  }
+})();
+
+function escHome(str) {
+  if (!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>
