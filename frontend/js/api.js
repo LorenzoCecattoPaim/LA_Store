@@ -380,33 +380,6 @@ const api = {
     },
   },
 
-  stockNotifications: {
-    async subscribe({ product_id, name, email } = {}) {
-      return post('/stock-notifications', { product_id, name, email });
-    },
-    async mine() {
-      return get('/stock-notifications/mine', true);
-    },
-    async cancel(id) {
-      return del(`/stock-notifications/${id}`, true);
-    },
-    async adminList({ status, product_id, search, page, limit } = {}) {
-      const p = new URLSearchParams();
-      if (status) p.set('status', status);
-      if (product_id) p.set('product_id', product_id);
-      if (search) p.set('search', search);
-      if (page) p.set('page', page);
-      if (limit) p.set('limit', limit);
-      return get(`/stock-notifications/admin/list?${p}`, true);
-    },
-    async adminMetrics() {
-      return get('/stock-notifications/admin/metrics', true);
-    },
-    async adminTrigger(productId) {
-      return post(`/stock-notifications/admin/trigger/${productId}`, {}, true);
-    },
-  },
-
   admin: {
     async metrics() {
       return get('/admin/metrics', true);

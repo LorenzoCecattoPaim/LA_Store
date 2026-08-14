@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 60" role="img" aria-labelledby="lastoreLogoMonoTitle">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" role="img" aria-labelledby="lastoreLogoMonoTitle">
   <title id="lastoreLogoMonoTitle">L.A. STORE</title>
-  <text x="0" y="40" font-family="'Cormorant Garamond', Georgia, serif" font-size="38" letter-spacing="4" fill="currentColor">L.A. <tspan font-weight="600">STORE</tspan></text>
-  <rect x="2" y="50" width="46" height="1.5" fill="currentColor"/>
+  <ellipse cx="30" cy="27" rx="17.5" ry="22" fill="none" stroke="#B5966A" stroke-width="1"/>
+  <text x="30" y="33" font-family="'Cormorant Garamond', Georgia, serif" font-size="16" font-weight="500" letter-spacing="0.5" fill="#B5966A" text-anchor="middle">LA</text>
 </svg>

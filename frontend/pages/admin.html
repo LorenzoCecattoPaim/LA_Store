@@ -129,10 +129,6 @@
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
         Clientes
       </button>
-      <button class="sidebar-link" data-panel="notificacoes" onclick="switchPanel(this)">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
-        Notificações de Estoque
-      </button>
       <button class="sidebar-link" data-panel="cupons" onclick="switchPanel(this)">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
         Cupons
@@ -380,40 +376,6 @@
             style="border:0.5px solid var(--color-border-mid);padding:8px 14px;font-size:12px;font-family:var(--font-body);color:var(--color-text);background:var(--color-bg);width:220px;outline:none">
         </div>
         <div id="clientesTable" style="overflow-x:auto"></div>
-      </div>
-
-      <!-- NOTIFICAÇÕES DE ESTOQUE -->
-      <div class="admin-panel" id="panel-notificacoes">
-        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:24px">
-          <div class="metric-card">
-            <div class="metric-label">Aguardando reposição</div>
-            <div class="metric-value" id="notifMetricPending">—</div>
-            <div class="metric-sub">Notificações pendentes</div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-label">Notificações enviadas</div>
-            <div class="metric-value" id="notifMetricSent">—</div>
-            <div class="metric-sub">Total já notificado</div>
-          </div>
-        </div>
-
-        <div id="notifTopProductsWrap" style="margin-bottom:28px;display:none">
-          <h3 style="font-family:var(--font-display);font-size:18px;font-weight:400;margin-bottom:12px">Produtos com mais interesse</h3>
-          <div id="notifTopProducts" style="display:flex;flex-wrap:wrap;gap:10px"></div>
-        </div>
-
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px">
-          <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <button onclick="filterNotifByStatus('all')" id="notifFilterAll" class="prod-type-filter active" style="font-size:11px;padding:4px 12px;border:0.5px solid var(--color-border);background:var(--color-text);color:var(--color-bg);border-radius:20px;cursor:pointer;letter-spacing:0.04em">Todas</button>
-            <button onclick="filterNotifByStatus('pending')" id="notifFilterPending" class="prod-type-filter" style="font-size:11px;padding:4px 12px;border:0.5px solid var(--color-border);background:none;color:var(--color-text);border-radius:20px;cursor:pointer;letter-spacing:0.04em">Aguardando reposição</button>
-            <button onclick="filterNotifByStatus('notified')" id="notifFilterNotified" class="prod-type-filter" style="font-size:11px;padding:4px 12px;border:0.5px solid var(--color-border);background:none;color:var(--color-text);border-radius:20px;cursor:pointer;letter-spacing:0.04em">Notificados</button>
-            <button onclick="filterNotifByStatus('cancelled')" id="notifFilterCancelled" class="prod-type-filter" style="font-size:11px;padding:4px 12px;border:0.5px solid var(--color-border);background:none;color:var(--color-text);border-radius:20px;cursor:pointer;letter-spacing:0.04em">Cancelados</button>
-          </div>
-          <input type="search" placeholder="Buscar e-mail ou nome..." oninput="searchStockNotif(this.value)"
-            style="border:0.5px solid var(--color-border-mid);padding:8px 14px;font-size:12px;font-family:var(--font-body);color:var(--color-text);background:var(--color-bg);width:220px;outline:none">
-        </div>
-
-        <div id="notifTable" style="overflow-x:auto"></div>
       </div>
 
       <!-- CUPONS -->
@@ -700,7 +662,7 @@
   document.getElementById('adminUserLabel').textContent = user.name;
 
   /* === SWITCH PANEL === */
-  const TITLES = { dashboard:'Dashboard', pedidos:'Pedidos', produtos:'Produtos', cadastro:'Novo produto', clientes:'Clientes', notificacoes:'Notificações de Estoque', cupons:'Cupons', banners:'Banners', categorias:'Categorias', lancamentos:'Lançamentos', marcas:'Marcas', cores:'Cores', tamanhos:'Tamanhos' };
+  const TITLES = { dashboard:'Dashboard', pedidos:'Pedidos', produtos:'Produtos', cadastro:'Novo produto', clientes:'Clientes', cupons:'Cupons', banners:'Banners', categorias:'Categorias', lancamentos:'Lançamentos', marcas:'Marcas', cores:'Cores', tamanhos:'Tamanhos' };
 
   window.switchPanel = (btn) => {
     const panelId = btn.dataset.panel;
@@ -718,7 +680,6 @@
     pedidos:   loadPedidos,
     produtos:  loadProdutos,
     clientes:  loadClientes,
-    notificacoes: loadStockNotifAdmin,
     cupons:    loadCupons,
     banners:   loadBanners,
     categorias: loadCategorias,
@@ -732,11 +693,10 @@
   /* === DASHBOARD === */
   async function loadDashboard() {
     try {
-      const [{ metrics }, { products: lowStock }, { orders: recent }, notifMetrics] = await Promise.all([
+      const [{ metrics }, { products: lowStock }, { orders: recent }] = await Promise.all([
         api.admin.metrics(),
         api.admin.lowStock(),
         api.orders.list({ limit: 5 }),
-        api.stockNotifications.adminMetrics().catch(() => null),
       ]);
 
       document.getElementById('metricsGrid').innerHTML = [
@@ -745,7 +705,6 @@
         { label:'Em Estoque', value: metrics.stock_products ?? '—', sub:'Produtos com estoque' },
         { label:'Sob Encomenda', value: metrics.mto_products ?? '—', sub:'Produzidos sob encomenda' },
         { label:'Clientes', value: metrics.total_clients, sub:'Cadastrados' },
-        { label:'Avise-me', value: notifMetrics?.metrics?.total_pending ?? '—', sub:'Notificações pendentes' },
       ].map(m => `
         <div class="metric-card">
           <div class="metric-label">${m.label}</div>
@@ -1219,123 +1178,6 @@
   }
 
   window.searchClientes = (q) => loadClientes(q);
-
-  /* === NOTIFICAÇÕES DE ESTOQUE === */
-  let notifCurrentStatus = 'all';
-  let notifCurrentSearch = '';
-
-  async function loadStockNotifAdmin() {
-    await Promise.all([loadStockNotifMetrics(), loadStockNotifTable()]);
-  }
-
-  async function loadStockNotifMetrics() {
-    try {
-      const { metrics } = await api.stockNotifications.adminMetrics();
-      document.getElementById('notifMetricPending').textContent = metrics.total_pending ?? '—';
-      document.getElementById('notifMetricSent').textContent = metrics.total_notified ?? '—';
-
-      const topWrap = document.getElementById('notifTopProductsWrap');
-      const topEl   = document.getElementById('notifTopProducts');
-      if (metrics.top_products?.length) {
-        topWrap.style.display = 'block';
-        topEl.innerHTML = metrics.top_products.map(tp => `
-          <div style="display:flex;align-items:center;gap:8px;padding:8px 14px;border:0.5px solid var(--color-border);border-radius:20px;font-size:12px">
-            <span>${tp.product?.name || 'Produto removido'}</span>
-            <span style="background:var(--color-text);color:var(--color-bg);font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500">${tp.count}</span>
-          </div>
-        `).join('');
-      } else {
-        topWrap.style.display = 'none';
-      }
-    } catch { /* métricas são opcionais — não bloqueia a tabela */ }
-  }
-
-  async function loadStockNotifTable() {
-    const el = document.getElementById('notifTable');
-    el.innerHTML = '<p style="font-size:13px;color:var(--color-text-light)">Carregando...</p>';
-    try {
-      const params = { limit: 100 };
-      if (notifCurrentStatus !== 'all') params.status = notifCurrentStatus;
-      if (notifCurrentSearch) params.search = notifCurrentSearch;
-
-      const { notifications, total } = await api.stockNotifications.adminList(params);
-
-      if (!notifications?.length) {
-        el.innerHTML = '<p style="font-size:13px;color:var(--color-text-light);padding:24px 0">Nenhuma notificação encontrada.</p>';
-        return;
-      }
-
-      const statusBadge = (s) => {
-        if (s === 'notified')  return '<span style="font-size:10px;letter-spacing:0.05em;text-transform:uppercase;padding:3px 9px;background:rgba(74,122,74,0.1);color:#4A7A4A;border-radius:10px">Notificado</span>';
-        if (s === 'cancelled') return '<span style="font-size:10px;letter-spacing:0.05em;text-transform:uppercase;padding:3px 9px;background:rgba(163,51,51,0.08);color:#A33;border-radius:10px">Cancelado</span>';
-        return '<span style="font-size:10px;letter-spacing:0.05em;text-transform:uppercase;padding:3px 9px;background:rgba(0,0,0,0.04);color:var(--color-text-muted);border-radius:10px">Aguardando</span>';
-      };
-
-      el.innerHTML = `
-        <table class="admin-table">
-          <thead><tr><th>Produto</th><th>Estoque</th><th>Cliente</th><th>E-mail</th><th>Cadastrado em</th><th>Status</th><th>Notificado em</th><th>Ação</th></tr></thead>
-          <tbody>
-            ${notifications.map(n => {
-              const prodStock = Number(n.product?.stock ?? -1);
-              const prodId    = n.product?.id || null;
-              const stockBadge = n.product
-                ? (prodStock > 0
-                    ? `<span style="font-size:10px;padding:2px 8px;background:rgba(74,122,74,0.1);color:#4A7A4A;border-radius:10px">${prodStock} un.</span>`
-                    : `<span style="font-size:10px;padding:2px 8px;background:rgba(163,51,51,0.08);color:#A33;border-radius:10px">Sem estoque</span>`)
-                : '—';
-              // Botão "Disparar" aparece apenas para notificações pending de produtos com estoque > 0
-              // (cenário de falha onde o estoque voltou mas a notificação não foi processada)
-              const triggerBtn = (n.status === 'pending' && prodId && prodStock > 0)
-                ? `<button onclick="triggerNotif('${prodId}','${n.product?.name || 'produto'}')" style="font-size:10px;letter-spacing:0.06em;text-transform:uppercase;background:none;border:0.5px solid var(--color-border);border-radius:4px;cursor:pointer;color:#4A7A4A;padding:4px 10px;font-family:var(--font-body)">Disparar</button>`
-                : '—';
-              return `
-              <tr>
-                <td>${n.product?.name || '<span style="color:var(--color-text-light)">Produto removido</span>'}</td>
-                <td>${stockBadge}</td>
-                <td>${n.user?.name || n.name || '<span style="color:var(--color-text-light)">Visitante</span>'}</td>
-                <td style="font-size:12px;color:var(--color-text-muted)">${n.email}</td>
-                <td style="font-size:12px;color:var(--color-text-light)">${fmtDate(n.created_at)}</td>
-                <td>${statusBadge(n.status)}</td>
-                <td style="font-size:12px;color:var(--color-text-light)">${n.notified_at ? fmtDate(n.notified_at) : '—'}</td>
-                <td>${triggerBtn}</td>
-              </tr>
-            `}).join('')}
-          </tbody>
-        </table>
-        <p style="font-size:11px;color:var(--color-text-light);margin-top:12px">${total} registro${total === 1 ? '' : 's'}</p>
-      `;
-    } catch {
-      el.innerHTML = '<p style="color:#A33;font-size:13px">Erro ao carregar notificações.</p>';
-    }
-  }
-
-  window.triggerNotif = async (productId, productName) => {
-    if (!confirm(`Disparar notificações manualmente para "${productName}"?\n\nIsso enviará e-mails para todos os inscritos pendentes.`)) return;
-    try {
-      const { message } = await api.stockNotifications.adminTrigger(productId);
-      showToast(message || 'Disparo iniciado. Verifique os logs do servidor.');
-      setTimeout(() => loadStockNotifAdmin(), 2000); // recarrega após 2s para pegar status atualizado
-    } catch (err) {
-      showToast('Erro ao disparar: ' + (err.message || 'Tente novamente.'));
-    }
-  };
-
-  window.filterNotifByStatus = (status) => {
-    notifCurrentStatus = status;
-    document.querySelectorAll('#panel-notificacoes .prod-type-filter').forEach(b => {
-      b.style.background = 'none';
-      b.style.color = 'var(--color-text)';
-    });
-    const map = { all: 'notifFilterAll', pending: 'notifFilterPending', notified: 'notifFilterNotified', cancelled: 'notifFilterCancelled' };
-    const active = document.getElementById(map[status]);
-    if (active) { active.style.background = 'var(--color-text)'; active.style.color = 'var(--color-bg)'; }
-    loadStockNotifTable();
-  };
-
-  window.searchStockNotif = (q) => {
-    notifCurrentSearch = q;
-    loadStockNotifTable();
-  };
 
   /* === CUPONS === */
   async function loadCupons() {

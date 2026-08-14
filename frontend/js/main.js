@@ -285,7 +285,7 @@ function renderProductCard(p) {
              style="cursor:pointer">
       <div class="product-img-wrap">
         ${isOutOfStock
-          ? '<div class="product-badge" style="background:rgba(44,42,38,0.78)">Fora de estoque</div>'
+          ? '<div class="product-badge" style="background:rgba(58,46,34,0.82)">Esgotado</div>'
           : (p.badge ? `<div class="product-badge">${p.badge}</div>` : '')}
         ${coverImg
           ? `<img src="${coverImg.url}" alt="${coverImg.alt || p.name}" style="width:100%;height:100%;object-fit:cover${isOutOfStock ? ';filter:grayscale(35%);opacity:0.82' : ''}">`
@@ -302,7 +302,7 @@ function renderProductCard(p) {
           ${isOutOfStock
             ? `<button class="btn-primary" style="font-size:10px;padding:10px 20px"
                 onclick="event.stopPropagation();window.location='${pageHref('produto.html')}?slug=${p.slug}'">
-                Avise-me
+                Ver produto
               </button>`
             : `<button class="btn-primary" style="font-size:10px;padding:10px 20px"
                 onclick="event.stopPropagation();handleQuickAdd('${p.slug}',${p.id},'${p.name}')">
@@ -310,7 +310,7 @@ function renderProductCard(p) {
               </button>`}
         </div>
       </div>
-      <div class="product-material">${p.material || ''}</div>
+      <div class="product-material">${p.brand?.name || ''}</div>
       <div class="product-name">${p.name}</div>
       <div class="product-price">${price}</div>
     </article>

@@ -1,4 +1,13 @@
 -- ============================================================
+-- [DESATIVADO] Notificações de Retorno ao Estoque — L.A. STORE
+--
+-- Este recurso foi REMOVIDO do produto (backend/frontend não o usam mais).
+-- Este script é mantido apenas como referência histórica de schema.
+-- Se a tabela abaixo já existir no seu banco, ela é inofensiva e pode ser
+-- removida manualmente com: DROP TABLE IF EXISTS stock_notifications;
+-- ============================================================
+
+-- ============================================================
 -- MIGRATION: Notificações de Retorno ao Estoque — L.A. STORE
 -- Execute no SQL Editor do Supabase
 -- ============================================================

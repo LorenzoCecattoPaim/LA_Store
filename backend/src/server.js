@@ -11,7 +11,6 @@ const orderRoutes   = require('./routes/orders');
 const contactRoutes = require('./routes/contact');
 const imageRoutes   = require('./routes/images');
 const launchRoutes  = require('./routes/launches');
-const stockNotificationRoutes = require('./routes/stockNotifications');
 const { couponRouter, newsletterRouter, addressRouter, adminRouter, paymentRouter } = require('./routes/extra');
 const { errorHandler, notFound } = require('./middleware/validate');
 
@@ -61,20 +60,9 @@ const authLimiter = rateLimit({
   message: { error: 'Muitas tentativas de login. Aguarde 15 minutos.' },
 });
 
-const stockNotifLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 15,
-  message: { error: 'Muitas solicitações. Aguarde alguns minutos e tente novamente.' },
-});
-
 app.use('/api/', globalLimiter);
 app.use('/api/auth/login',    authLimiter);
 app.use('/api/auth/register', authLimiter);
-app.use('/api/stock-notifications', (req, res, next) => {
-  // Limita apenas o cadastro público (POST /), demais rotas seguem o limite global
-  if (req.method === 'POST' && req.path === '/') return stockNotifLimiter(req, res, next);
-  next();
-});
 
 /* ============================================================
    PARSING & LOGGING
@@ -109,7 +97,6 @@ app.use('/api/orders',     orderRoutes);
 app.use('/api/contact',    contactRoutes);
 app.use('/api/images',     imageRoutes);
 app.use('/api/launches',   launchRoutes);
-app.use('/api/stock-notifications', stockNotificationRoutes);
 app.use('/api/coupons',    couponRouter);
 app.use('/api/newsletter', newsletterRouter);
 app.use('/api/addresses',  addressRouter);

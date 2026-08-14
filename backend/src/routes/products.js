@@ -3,7 +3,6 @@ const { body } = require('express-validator');
 const supabase  = require('../config/supabase');
 const { auth, adminOnly } = require('../middleware/auth');
 const { validate } = require('../middleware/validate');
-const { processBackInStockNotifications } = require('../utils/stockNotificationService');
 
 /* Campos de personalização permitidos (sistema legado — sem uso na L.A. STORE,
    mantido apenas por compatibilidade com dados antigos) */
@@ -592,31 +591,10 @@ router.put('/:id', auth, adminOnly, async (req, res, next) => {
         .map(f => [f, req.body[f]])
     );
 
-    /* Captura o estoque anterior ANTES de atualizar, para detectar reabastecimento */
-    let previousStock = null;
-    if (payload.stock !== undefined) {
-      const { data: before, error: beforeErr } = await supabase
-        .from('products').select('stock').eq('id', req.params.id).single();
-      if (beforeErr) {
-        console.error('[BACK_IN_STOCK] Erro ao ler estoque anterior:', beforeErr.message);
-      } else {
-        previousStock = Number(before?.stock ?? -1);
-      }
-    }
-
     const { data, error } = await supabase
       .from('products').update(payload).eq('id', req.params.id).select().single();
     if (error) throw error;
     if (!data) return res.status(404).json({ error: 'Produto não encontrado.' });
-
-    /* Detecta transição de estoque 0 → positivo e dispara notificações.
-       Roda em background para não atrasar a resposta ao admin.
-       previousStock e currentStock são passados explicitamente para garantir
-       a transição correta, sem depender de consulta adicional ao banco. */
-    if (previousStock !== null && Number(previousStock) <= 0 && Number(data.stock) > 0) {
-      processBackInStockNotifications(data.id, previousStock, Number(data.stock))
-        .catch(err => console.error('[BACK_IN_STOCK] Falha crítica no disparo:', err?.stack || err?.message));
-    }
 
     res.json({ product: data });
   } catch (err) { next(err); }

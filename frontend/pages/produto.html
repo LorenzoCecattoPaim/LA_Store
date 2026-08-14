@@ -183,35 +183,6 @@
 
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
-<!-- MODAL: Avise-me quando voltar (visitante não logado) -->
-<div id="stockNotifyModal" style="display:none;position:fixed;inset:0;z-index:9999;align-items:center;justify-content:center;padding:20px">
-  <div id="stockNotifyModalOverlay" style="position:absolute;inset:0;background:rgba(44,42,38,0.45);backdrop-filter:blur(2px)" onclick="closeStockNotifyModal()"></div>
-  <div style="position:relative;background:var(--color-bg,#FAFAF8);max-width:420px;width:100%;border-radius:12px;padding:32px 28px;box-shadow:0 20px 60px rgba(0,0,0,0.25)">
-    <button onclick="closeStockNotifyModal()" aria-label="Fechar" style="position:absolute;top:16px;right:16px;background:none;border:none;cursor:pointer;padding:6px;color:var(--color-text-light)">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-    </button>
-
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
-      <strong style="font-size:15px;font-weight:500;letter-spacing:0.02em">Avise-me quando voltar</strong>
-    </div>
-    <p style="font-size:12.5px;color:var(--color-text-muted);line-height:1.6;margin:0 0 22px" id="stockNotifyModalProductLine"></p>
-
-    <form id="stockNotifyForm" onsubmit="submitStockNotifyForm(event)">
-      <div class="form-group" style="margin-bottom:14px">
-        <label style="display:block;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--color-text-muted);margin-bottom:6px">Nome (opcional)</label>
-        <input type="text" id="stockNotifyName" placeholder="Seu nome" style="width:100%;padding:11px 14px;border:0.5px solid var(--color-border);border-radius:6px;font-family:var(--font-body);font-size:13px;background:#fff">
-      </div>
-      <div class="form-group" style="margin-bottom:18px">
-        <label style="display:block;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--color-text-muted);margin-bottom:6px">E-mail *</label>
-        <input type="email" id="stockNotifyEmail" placeholder="seu@email.com" required style="width:100%;padding:11px 14px;border:0.5px solid var(--color-border);border-radius:6px;font-family:var(--font-body);font-size:13px;background:#fff">
-      </div>
-      <p id="stockNotifyModalFeedback" style="font-size:12px;margin:0 0 14px;min-height:16px;line-height:1.5"></p>
-      <button type="submit" id="stockNotifyModalBtn" class="btn-primary" style="width:100%">Cadastrar Notificação</button>
-    </form>
-  </div>
-</div>
-
 <!-- GUIA DE MEDIDAS -->
 <div id="sizeGuideModal" style="display:none;position:fixed;inset:0;z-index:9999;align-items:center;justify-content:center;padding:20px">
   <div style="position:absolute;inset:0;background:rgba(20,20,20,0.45);backdrop-filter:blur(2px)" onclick="closeSizeGuide()"></div>
@@ -461,23 +432,6 @@
             : ''}
         </div>
 
-        ${isOutOfStock ? `
-        <!-- AVISE-ME QUANDO VOLTAR -->
-        <div id="stockNotifyBlock" style="margin-bottom:20px;padding:20px;background:linear-gradient(135deg, rgba(0,0,0,0.025), rgba(0,0,0,0.045));border:0.5px solid var(--color-border);border-radius:10px">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
-            <strong style="font-size:13px;font-weight:500;letter-spacing:0.02em">Avise-me quando voltar</strong>
-          </div>
-          <p style="font-size:12px;color:var(--color-text-muted);line-height:1.6;margin:0 0 16px">
-            Cadastre-se e enviaremos um e-mail assim que esta peça voltar ao estoque.
-          </p>
-          <button class="btn-primary" id="stockNotifyBtn" style="width:100%" onclick="requestStockNotify()">
-            Quero ser avisado
-          </button>
-          <p id="stockNotifyFeedback" style="font-size:12px;margin:12px 0 0;min-height:16px;line-height:1.6"></p>
-        </div>
-        ` : ''}
-
         <div class="produto-actions">
           ${isOutOfStock
             ? '' // Botão de comprar/adicionar oculto — substituído pelo bloco de notificação acima
@@ -709,89 +663,6 @@
         ? '✓ Frete grátis para este CEP!'
         : `Frete: ${fmtPrice(cost)} — Prazo: 5 a 8 dias úteis`;
     } catch { res.textContent = 'Erro ao calcular frete.'; }
-  };
-
-  /* === AVISE-ME QUANDO VOLTAR === */
-  window.requestStockNotify = async () => {
-    const feedback = document.getElementById('stockNotifyFeedback');
-    const btn = document.getElementById('stockNotifyBtn');
-
-    if (Auth.isLoggedIn()) {
-      // Cliente logado: cadastro em um único clique, sem pedir nome/e-mail
-      if (btn) { btn.disabled = true; btn.textContent = 'Enviando...'; }
-      try {
-        await api.stockNotifications.subscribe({ product_id: product.id });
-        if (feedback) {
-          feedback.style.color = '#4A7A4A';
-          feedback.innerHTML = '<strong>Perfeito!</strong><br>Avisaremos você por e-mail assim que este produto voltar ao estoque.';
-        }
-        if (btn) btn.style.display = 'none';
-      } catch (err) {
-        if (feedback) {
-          feedback.style.color = err.status === 409 ? '#8A5A18' : '#A33';
-          feedback.textContent = err.status === 409
-            ? 'Você já está acompanhando este produto.'
-            : (err.message || 'Erro ao cadastrar. Tente novamente.');
-        }
-        if (btn) { btn.disabled = false; btn.textContent = 'Quero ser avisado'; }
-      }
-    } else {
-      // Visitante: abre modal pedindo e-mail (nome opcional)
-      openStockNotifyModal();
-    }
-  };
-
-  window.openStockNotifyModal = () => {
-    const modal = document.getElementById('stockNotifyModal');
-    const line  = document.getElementById('stockNotifyModalProductLine');
-    if (line) line.textContent = `Assim que "${product.name}" voltar ao estoque, enviaremos um e-mail para você.`;
-    if (modal) { modal.style.display = 'flex'; }
-    document.body.style.overflow = 'hidden';
-    setTimeout(() => document.getElementById('stockNotifyEmail')?.focus(), 50);
-  };
-
-  window.closeStockNotifyModal = () => {
-    const modal = document.getElementById('stockNotifyModal');
-    if (modal) modal.style.display = 'none';
-    document.body.style.overflow = '';
-  };
-
-  window.submitStockNotifyForm = async (e) => {
-    e.preventDefault();
-    const name  = document.getElementById('stockNotifyName')?.value?.trim() || null;
-    const email = document.getElementById('stockNotifyEmail')?.value?.trim();
-    const feedback = document.getElementById('stockNotifyModalFeedback');
-    const btn = document.getElementById('stockNotifyModalBtn');
-
-    if (!email) return;
-
-    if (btn) { btn.disabled = true; btn.textContent = 'Enviando...'; }
-    try {
-      await api.stockNotifications.subscribe({ product_id: product.id, name, email });
-      if (feedback) {
-        feedback.style.color = '#4A7A4A';
-        feedback.innerHTML = '<strong>Perfeito!</strong><br>Assim que este produto voltar ao estoque enviaremos um e-mail para você.';
-      }
-      document.getElementById('stockNotifyForm')?.querySelector('input[type=text], input[type=email]')?.blur();
-      if (btn) btn.style.display = 'none';
-      // Também atualiza o bloco principal da página
-      const mainFeedback = document.getElementById('stockNotifyFeedback');
-      const mainBtn = document.getElementById('stockNotifyBtn');
-      if (mainFeedback) {
-        mainFeedback.style.color = '#4A7A4A';
-        mainFeedback.innerHTML = '<strong>Perfeito!</strong><br>Avisaremos você por e-mail assim que este produto voltar ao estoque.';
-      }
-      if (mainBtn) mainBtn.style.display = 'none';
-      setTimeout(closeStockNotifyModal, 2200);
-    } catch (err) {
-      if (feedback) {
-        feedback.style.color = err.status === 409 ? '#8A5A18' : '#A33';
-        feedback.textContent = err.status === 409
-          ? 'Você já está acompanhando este produto.'
-          : (err.message || 'Erro ao cadastrar. Tente novamente.');
-      }
-      if (btn) { btn.disabled = false; btn.textContent = 'Cadastrar Notificação'; }
-    }
   };
 
 })();
