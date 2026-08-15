@@ -3,7 +3,7 @@
  * Cliente HTTP centralizado para comunicacao com o backend oficial.
  */
 
-const API_URL = window.LASTORE_API_URL || 'https://lastore-api.onrender.com/api';
+const API_URL = window.LASTORE_API_URL || 'https://la-store.onrender.com/api';
 
 /* === TOKEN === */
 const Auth = {

@@ -4,4 +4,4 @@ Disallow: /pages/admin.html
 Disallow: /pages/checkout.html
 Disallow: /pages/cliente.html
 
-Sitemap: https://lastore.com.br/sitemap.xml
+Sitemap: https://la-store-liard.vercel.app/sitemap.xml
